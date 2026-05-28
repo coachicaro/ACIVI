@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACIVI 360 — Sistema OKR</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #1A4BBF;
+  --purple-light: #E6EEF9;
+  --purple-dark: #0A1E6E;
+  --teal: #0F6E56;
+  --teal-light: #E1F5EE;
+  --coral: #C0390F;
+  --coral-light: #FAECE7;
+  --amber: #F5A800;
+  --amber-light: #FEF4DC;
+  --green: #3B6D11;
+  --green-light: #EAF3DE;
+  --bg: #EEF2FA;
+  --surface: #FFFFFF;
+  --border: rgba(10,30,110,0.1);
+  --border-strong: rgba(10,30,110,0.2);
+  --text: #0A1E6E;
+  --text-muted: #3A4F8A;
+  --text-faint: #7A8FC2;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 240px;
+  background: var(--purple-dark);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+.sidebar-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.25rem;
+}
+.sidebar-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2.5rem;
+}
+.sidebar-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.75rem;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 2px;
+  text-decoration: none;
+}
+.nav-item:hover, .nav-item.active {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+}
+.nav-item .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.phase-indicator {
+  background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+}
+.phase-indicator-label { font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.phase-indicator-value { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: #fff; }
+.phase-indicator-sub { font-size: 11px; color: rgba(255,255,255,0.5); }
+
+/* MAIN */
+.main {
+  margin-left: 240px;
+  padding: 2rem 2.5rem;
+  min-height: 100vh;
+}
+
+/* HEADER */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+.page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.header-actions { display: flex; gap: 8px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary { background: var(--purple); color: #fff; }
+.btn-primary:hover { background: var(--purple-dark); }
+.btn-outline { background: var(--surface); color: var(--text); border: 1px solid var(--border-strong); }
+.btn-outline:hover { background: var(--bg); }
+.btn-danger { background: #fee; color: #c00; border: 1px solid #fcc; }
+.btn-danger:hover { background: #fcc; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+
+/* METRICS GRID */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+.metric-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+}
+.metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 8px; }
+.metric-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; color: var(--text); line-height: 1; }
+.metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+/* PROGRESS RING */
+.ring-wrap { display: flex; align-items: center; gap: 12px; }
+.ring-info .metric-value { font-size: 24px; }
+
+/* INVEST BANNER */
+.invest-banner {
+  background: var(--green-light);
+  border: 1px solid #C0DD97;
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+  font-size: 13px;
+  color: var(--green);
+}
+.invest-banner strong { font-weight: 600; }
+
+/* OKR CARDS */
+.okr-section { margin-bottom: 1.5rem; }
+.okr-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.okr-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+.okr-card-header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+}
+.okr-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.okr-info { flex: 1; min-width: 0; }
+.okr-label { font-size: 11px; font-weight: 500; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.okr-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3; }
+.okr-meta { display: flex; align-items: center; gap: 16px; margin-top: 10px; }
+.okr-pct { font-size: 13px; font-weight: 500; }
+.okr-bar { flex: 1; height: 4px; background: var(--bg); border-radius: 2px; overflow: hidden; max-width: 200px; }
+.okr-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+.okr-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.chevron { font-size: 18px; color: var(--text-faint); transition: transform 0.2s; }
+.okr-card.open .chevron { transform: rotate(180deg); }
+
+/* KR LIST */
+.kr-list { display: none; }
+.okr-card.open .kr-list { display: block; }
+.kr-item {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: start;
+}
+.kr-item:last-child { border-bottom: none; }
+.kr-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+  padding-top: 2px;
+  white-space: nowrap;
+}
+.kr-body {}
+.kr-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+.kr-baseline { font-size: 12px; color: var(--text-faint); margin-top: 4px; }
+.kr-right { text-align: right; min-width: 140px; }
+.kr-target-label { font-size: 11px; color: var(--text-faint); }
+.kr-target-val { font-size: 13px; font-weight: 500; color: var(--text); margin-top: 1px; margin-bottom: 8px; }
+.kr-slider-wrap { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.kr-slider-val { font-size: 12px; font-weight: 500; color: var(--text-muted); min-width: 28px; text-align: right; }
+input[type=range] {
+  -webkit-appearance: none;
+  width: 90px; height: 4px;
+  background: var(--bg);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--purple);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.kr-mini-bar { height: 3px; background: var(--bg); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+.kr-mini-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+
+/* ADD KR FORM */
+.add-kr-form {
+  padding: 1rem 1.5rem;
+  background: #FAFAFA;
+  border-top: 1px dashed var(--border-strong);
+  display: none;
+}
+.add-kr-form.visible { display: block; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-label { font-size: 11px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-input:focus { border-color: var(--purple); }
+.form-input.full { grid-column: 1 / -1; }
+.form-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* ADD OBJECTIVE MODAL */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.visible { display: flex; }
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 2rem;
+  width: 520px;
+  max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.modal-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; margin-bottom: 1.5rem; }
+.modal-form-group { margin-bottom: 1rem; }
+.color-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.color-option {
+  width: 28px; height: 28px; border-radius: 50%;
+  cursor: pointer; border: 3px solid transparent;
+  transition: border-color 0.15s;
+}
+.color-option.selected { border-color: var(--text); }
+.emoji-picker { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.emoji-option {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  cursor: pointer; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: background 0.1s;
+}
+.emoji-option:hover, .emoji-option.selected { background: var(--bg); border-color: var(--purple); }
+
+/* SECTIONS */
+.section { display: none; }
+.section.active { display: block; }
+
+/* TIMELINE */
+.timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 2rem; }
+.tl-phase {
+  background: var(--surface);
+  padding: 1.25rem;
+}
+.tl-phase.current { background: #FEF4DC; }
+.tl-phase-num { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 4px; }
+.tl-phase-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 8px; }
+.tl-phase.current .tl-phase-name { color: #0A1E6E; }
+.tl-invest { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+.tl-gains { font-size: 11px; }
+.tl-gain { display: inline-block; background: var(--bg); border-radius: 4px; padding: 2px 6px; margin: 2px 2px 0 0; color: var(--text-muted); }
+.tl-phase.current .tl-gain { background: #FEF4DC; color: #7A4800; }
+.current-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--amber); color: #0A1E6E; border-radius: 20px; font-size: 10px; padding: 2px 8px; margin-bottom: 8px; font-weight: 600; }
+
+/* SETTINGS */
+.settings-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+.settings-title { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 16px; margin-bottom: 1rem; }
+.settings-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+.settings-row:last-child { border-bottom: none; }
+.settings-key { font-size: 13px; color: var(--text-muted); }
+.settings-val { font-size: 13px; font-weight: 500; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--purple-dark);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 999;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sidebar { width: 200px; }
+  .main { margin-left: 200px; padding: 1.5rem; }
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .timeline { grid-template-columns: 1fr 1fr; }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">ACIVI 360</div>
+  <div class="sidebar-sub">Sistema OKR</div>
+  <div class="sidebar-label">Navegação</div>
+  <a class="nav-item active" onclick="showSection('dashboard')">
+    <span style="font-size:16px;">📊</span> Dashboard
+  </a>
+  <a class="nav-item" onclick="showSection('okrs')">
+    <span style="font-size:16px;">🎯</span> Objetivos & KRs
+  </a>
+  <a class="nav-item" onclick="showSection('roadmap')">
+    <span style="font-size:16px;">🗺️</span> Roadmap de Fases
+  </a>
+  <a class="nav-item" onclick="showSection('settings')">
+    <span style="font-size:16px;">⚙️</span> Configurações
+  </a>
+  <div class="sidebar-bottom">
+    <div class="phase-indicator">
+      <div class="phase-indicator-label">Fase atual</div>
+      <div class="phase-indicator-value">Fase 1 · Q1</div>
+      <div class="phase-indicator-sub">Prospecção</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <div id="sec-dashboard" class="section active">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Dashboard OKR</div>
+        <div class="page-sub">Fase 1 — Prospecção · Ciclo Trimestral · Q1 2025</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" onclick="exportData()">📤 Exportar</button>
+        <button class="btn btn-primary" onclick="saveAll()">💾 Salvar</button>
+      </div>
+    </div>
+
+    <div class="invest-banner">
+      <span style="font-size:20px;">✅</span>
+      <div><strong>Investimento Q1: R$ 0</strong> — Fase de prospecção não requer aporte financeiro. Ganho esperado: Benefícios + Associados.</div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Objetivos</div>
+        <div class="metric-value" id="m-objectives">3</div>
+        <div class="metric-sub">neste trimestre</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Key Results</div>
+        <div class="metric-value" id="m-krs">11</div>
+        <div class="metric-sub">métricas mensuráveis</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Progresso geral</div>
+        <div class="metric-value" id="m-progress" style="color:var(--purple)">0%</div>
+        <div class="metric-sub">média de todos os KRs</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">KRs em andamento</div>
+        <div class="metric-value" id="m-active">0</div>
+        <div class="metric-sub">com progresso > 0%</div>
+      </div>
+    </div>
+
+    <div id="okr-list-dash"></div>
+  </div>
+
+  <!-- OKRS -->
+  <div id="sec-okrs" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Objetivos & Key Results</div>
+        <div class="page-sub">Gerencie e edite seus OKRs</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="openAddObjective()">+ Novo Objetivo</button>
+      </div>
+    </div>
+    <div id="okr-list-manage"></div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div id="sec-roadmap" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Roadmap de Fases</div>
+        <div class="page-sub">Visão geral das 4 fases do projeto ACIVI 360</div>
+      </div>
+    </div>
+    <div class="timeline">
+      <div class="tl-phase current">
+        <div class="current-badge">● Atual</div>
+        <div class="tl-phase-num">Fase 1</div>
+        <div class="tl-phase-name">Prospecção</div>
+        <div class="tl-invest">💰 Investimento: R$ 0</div>
+        <div class="tl-gains">
+          <div class="tl-gain">+ Benefícios</div>
+          <div class="tl-gain">+ Associados</div>
+        </div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-phase-num">Fase 2</div>
+        <div class="tl-phase-name">Crescimento</div>
+        <div class="tl-invest">💰 Investimento: R$ 0</div>
+        <div class="tl-gains">
+          <div class="tl-gain">+ Benefícios</div>
+          <div class="tl-gain">+ Associados</div>
+          <div class="tl-gain">+ Seguidores</div>
+        </div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-phase-num">Fase 3</div>
+        <div class="tl-phase-name">Escala</div>
+        <div class="tl-invest">💰 20% novo faturamento</div>
+        <div class="tl-gains">
+          <div class="tl-gain">+ Benefícios</div>
+          <div class="tl-gain">+ Associados</div>
+          <div class="tl-gain">+ Seguidores</div>
+          <div class="tl-gain">+ Otimização</div>
+        </div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-phase-num">Fase 4</div>
+        <div class="tl-phase-name">Consolidação</div>
+        <div class="tl-invest">💰 20% novo faturamento</div>
+        <div class="tl-gains">
+          <div class="tl-gain">+ Benefícios</div>
+          <div class="tl-gain">+ Associados</div>
+          <div class="tl-gain">+ Visibilidade</div>
+          <div class="tl-gain">+ Novos serviços</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface); border-radius:var(--radius); border:1px solid var(--border); overflow:hidden;">
+      <div style="padding:1.25rem 1.5rem; border-bottom:1px solid var(--border);">
+        <div style="font-family:'Playfair Display',serif; font-weight:700; font-size:16px;">Detalhamento por fase</div>
+      </div>
+      <div style="padding:1.5rem;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <div>
+            <div style="font-weight:600; margin-bottom:0.75rem; color:var(--purple);">Fase 1 — Prospecção</div>
+            <ul style="list-style:none; font-size:13px; color:var(--text-muted); line-height:2;">
+              <li>• Mapear necessidades dos colaboradores (Link de pesquisa)</li>
+              <li>• Proposta para atrair empresas parceiras</li>
+              <li>• Gerar benefícios aos colaboradores</li>
+              <li>• Construção da narrativa e estratégias para as mídias</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight:600; margin-bottom:0.75rem; color:var(--teal);">Fase 2 — Crescimento</div>
+            <ul style="list-style:none; font-size:13px; color:var(--text-muted); line-height:2;">
+              <li>• Divulgar o projeto aos colaboradores</li>
+              <li>• Ativação de conteúdos sobre benefícios ACIVI 360 no TikTok</li>
+              <li>• Crescimento Instagram (Meta: 5 mil seguidores)</li>
+              <li>• Meta de novos Associados: 500</li>
+              <li>• Criação de novo produto (Venda de espaço digital)</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight:600; margin-bottom:0.75rem; color:var(--coral);">Fase 3 — Escala</div>
+            <ul style="list-style:none; font-size:13px; color:var(--text-muted); line-height:2;">
+              <li>• Sistema de gestão</li>
+              <li>• Contratação de pessoas</li>
+              <li>• Construção da vitrine no site e nas mídias</li>
+              <li>• Relatório com resultados concretos (Mídia kit)</li>
+              <li>• Tráfego pago e atendimento personalizado com IA</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-weight:600; margin-bottom:0.75rem; color:var(--amber);">Fase 4 — Consolidação</div>
+            <ul style="list-style:none; font-size:13px; color:var(--text-muted); line-height:2;">
+              <li>• Atendimento estruturado e automatizado</li>
+              <li>• Viabilizar o aumento da mensalidade</li>
+              <li>• O associativismo como essencial para os colaboradores</li>
+              <li>• Capacitar outras entidades (Ser case Federasul)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="sec-settings" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Configurações</div>
+        <div class="page-sub">Gerencie os dados do sistema</div>
+      </div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Sobre o projeto</div>
+      <div class="settings-row">
+        <span class="settings-key">Nome do projeto</span>
+        <span class="settings-val">ACIVI 360</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-key">Fase atual</span>
+        <span class="settings-val">Fase 1 — Prospecção</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-key">Ciclo</span>
+        <span class="settings-val">Trimestral (Q1 2025)</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-key">Metodologia</span>
+        <span class="settings-val">OKR (Objectives & Key Results)</span>
+      </div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Dados</div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="exportData()">📤 Exportar JSON</button>
+        <button class="btn btn-outline" onclick="importData()">📥 Importar JSON</button>
+        <button class="btn btn-danger" onclick="resetData()">🗑️ Resetar dados</button>
+      </div>
+      <div style="margin-top:1rem; font-size:12px; color:var(--text-faint);">Os dados são salvos automaticamente no navegador via localStorage. Use Exportar para fazer backup antes de resetar.</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD OBJECTIVE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Novo Objetivo</div>
+    <div class="modal-form-group">
+      <div class="form-label">Título do objetivo</div>
+      <input type="text" class="form-input" id="new-obj-title" placeholder="Ex: Conquistar novos associados">
+    </div>
+    <div class="modal-form-group">
+      <div class="form-label">Ícone</div>
+      <div class="emoji-picker" id="emoji-picker">
+        <span class="emoji-option selected" data-emoji="🎯" onclick="selectEmoji(this)">🎯</span>
+        <span class="emoji-option" data-emoji="📈" onclick="selectEmoji(this)">📈</span>
+        <span class="emoji-option" data-emoji="🤝" onclick="selectEmoji(this)">🤝</span>
+        <span class="emoji-option" data-emoji="💡" onclick="selectEmoji(this)">💡</span>
+        <span class="emoji-option" data-emoji="📣" onclick="selectEmoji(this)">📣</span>
+        <span class="emoji-option" data-emoji="🏆" onclick="selectEmoji(this)">🏆</span>
+        <span class="emoji-option" data-emoji="👥" onclick="selectEmoji(this)">👥</span>
+        <span class="emoji-option" data-emoji="🌱" onclick="selectEmoji(this)">🌱</span>
+      </div>
+    </div>
+    <div class="modal-form-group">
+      <div class="form-label">Cor</div>
+      <div class="color-picker" id="color-picker">
+        <div class="color-option selected" data-color="#1A4BBF" data-bg="#E6EEF9" style="background:#1A4BBF;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#0F6E56" data-bg="#E1F5EE" style="background:#0F6E56;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#993C1D" data-bg="#FAECE7" style="background:#993C1D;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#BA7517" data-bg="#FAEEDA" style="background:#BA7517;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#185FA5" data-bg="#E6F1FB" style="background:#185FA5;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#639922" data-bg="#EAF3DE" style="background:#639922;" onclick="selectColor(this)"></div>
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:1.5rem;">
+      <button class="btn btn-outline" onclick="document.getElementById('modal-overlay').classList.remove('visible')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addObjective()">Adicionar Objetivo</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────
+const defaultData = {
+  objectives: [
+    {
+      id: 'O1',
+      label: 'Objetivo 1',
+      title: 'Entender profundamente as necessidades dos colaboradores e estruturar a base da proposta de valor',
+      color: '#1A4BBF',
+      bg: '#E6EEF9',
+      icon: '👥',
+      open: true,
+      krs: [
+        { id: 'KR1.1', text: 'Aplicar pesquisa de necessidades com link para ao menos 100 colaboradores respondentes', baseline: '0 respostas', target: '100 respostas', progress: 0 },
+        { id: 'KR1.2', text: 'Identificar e documentar as 5 principais demandas dos colaboradores por categoria de benefício', baseline: '0 categorias', target: '5 categorias', progress: 0 },
+        { id: 'KR1.3', text: 'Construir narrativa e estratégia de mídia aprovada pelo grupo (deck ou documento)', baseline: 'Não iniciado', target: 'Aprovado pelo grupo', progress: 0 },
+      ]
+    },
+    {
+      id: 'O2',
+      label: 'Objetivo 2',
+      title: 'Captar empresas parceiras e estruturar o portfólio inicial de benefícios para os colaboradores',
+      color: '#0F6E56',
+      bg: '#E1F5EE',
+      icon: '🤝',
+      open: false,
+      krs: [
+        { id: 'KR2.1', text: 'Prospectar e apresentar proposta formal para ao menos 20 empresas parceiras potenciais', baseline: '0 empresas', target: '20 empresas', progress: 0 },
+        { id: 'KR2.2', text: 'Fechar parceria ativa com ao menos 5 empresas que gerem benefícios concretos aos colaboradores', baseline: '0 parcerias', target: '5 parcerias', progress: 0 },
+        { id: 'KR2.3', text: 'Catalogar e comunicar ao menos 10 benefícios disponíveis aos colaboradores', baseline: '0 benefícios', target: '10 benefícios', progress: 0 },
+        { id: 'KR2.4', text: 'Obter NPS ≥ 8 dos primeiros colaboradores que utilizaram algum benefício', baseline: 'Não medido', target: 'NPS ≥ 8', progress: 0 },
+      ]
+    },
+    {
+      id: 'O3',
+      label: 'Objetivo 3',
+      title: 'Estabelecer presença digital e associativa como base para crescimento nas próximas fases',
+      color: '#993C1D',
+      bg: '#FAECE7',
+      icon: '📣',
+      open: false,
+      krs: [
+        { id: 'KR3.1', text: 'Definir e publicar o posicionamento da ACIVI 360 nas redes sociais (bio, visual, tom de voz)', baseline: 'Não publicado', target: 'Publicado e padronizado', progress: 0 },
+        { id: 'KR3.2', text: 'Alcançar 500 seguidores orgânicos no Instagram até o fim do trimestre', baseline: '0 seguidores', target: '500 seguidores', progress: 0 },
+        { id: 'KR3.3', text: 'Registrar ao menos 50 novos associados no período da Fase 1', baseline: '0 novos', target: '50 associados', progress: 0 },
+        { id: 'KR3.4', text: 'Publicar ao menos 12 conteúdos nas redes sociais (3 por semana no mês 1) sobre os benefícios ACIVI 360', baseline: '0 publicações', target: '12 publicações', progress: 0 },
+      ]
+    }
+  ]
+};
+
+let data;
+function loadData() {
+  try {
+    const saved = localStorage.getItem('acivi360-okr');
+    data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
+  } catch(e) {
+    data = JSON.parse(JSON.stringify(defaultData));
+  }
+}
+function saveAll() {
+  localStorage.setItem('acivi360-okr', JSON.stringify(data));
+  showToast('✅ Dados salvos com sucesso!');
+  renderAll();
+}
+
+// ── METRICS ──────────────────────────────────────────────────
+function calcOverall() {
+  const allKRs = data.objectives.flatMap(o => o.krs);
+  if (!allKRs.length) return 0;
+  return Math.round(allKRs.reduce((a, k) => a + k.progress, 0) / allKRs.length);
+}
+function calcObjAvg(obj) {
+  if (!obj.krs.length) return 0;
+  return Math.round(obj.krs.reduce((a, k) => a + k.progress, 0) / obj.krs.length);
+}
+function updateMetrics() {
+  const allKRs = data.objectives.flatMap(o => o.krs);
+  document.getElementById('m-objectives').textContent = data.objectives.length;
+  document.getElementById('m-krs').textContent = allKRs.length;
+  document.getElementById('m-progress').textContent = calcOverall() + '%';
+  document.getElementById('m-active').textContent = allKRs.filter(k => k.progress > 0).length;
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function renderOKRList(containerId, editable) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+
+  data.objectives.forEach((obj, oi) => {
+    const avg = calcObjAvg(obj);
+    const card = document.createElement('div');
+    card.className = 'okr-card okr-section' + (obj.open ? ' open' : '');
+    card.id = 'card-' + obj.id + '-' + containerId;
+    card.dataset.objid = obj.id;
+
+    let krHtml = obj.krs.map((kr, ki) => `
+      <div class="kr-item" id="kr-item-${kr.id}">
+        <div class="kr-num">${kr.id}</div>
+        <div class="kr-body">
+          ${editable
+            ? `<div class="kr-text" contenteditable="true" onblur="updateKRText('${obj.id}','${kr.id}',this.innerText)">${kr.text}</div>`
+            : `<div class="kr-text">${kr.text}</div>`
+          }
+          <div class="kr-baseline">Baseline: ${kr.baseline}</div>
+        </div>
+        <div class="kr-right">
+          <div class="kr-target-label">Meta</div>
+          <div class="kr-target-val">${kr.target}</div>
+          <div class="kr-slider-wrap">
+            <span class="kr-slider-val" id="sv-${kr.id}">${kr.progress}%</span>
+            <input type="range" min="0" max="100" step="5" value="${kr.progress}"
+              style="accent-color:${obj.color}"
+              oninput="updateProgress('${obj.id}','${kr.id}',this.value,'${containerId}')">
+          </div>
+          <div class="kr-mini-bar">
+            <div class="kr-mini-fill" id="mf-${kr.id}-${containerId}" style="width:${kr.progress}%; background:${obj.color};"></div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    let addKrHtml = editable ? `
+      <div class="add-kr-form" id="addkr-${obj.id}">
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1">
+            <div class="form-label">Descrição do Key Result</div>
+            <input type="text" class="form-input" id="nkr-text-${obj.id}" placeholder="Ex: Atingir 100 novos associados">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Baseline</div>
+            <input type="text" class="form-input" id="nkr-base-${obj.id}" placeholder="Ex: 0 associados">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Meta</div>
+            <input type="text" class="form-input" id="nkr-target-${obj.id}" placeholder="Ex: 100 associados">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline btn-sm" onclick="toggleAddKR('${obj.id}')">Cancelar</button>
+          <button class="btn btn-primary btn-sm" onclick="addKR('${obj.id}')">Adicionar KR</button>
+        </div>
+      </div>
+    ` : '';
+
+    card.innerHTML = `
+      <div class="okr-card-header" onclick="toggleCard('${obj.id}')">
+        <div class="okr-icon" style="background:${obj.bg}; font-size:20px;">${obj.icon}</div>
+        <div class="okr-info">
+          <div class="okr-label">${obj.label}</div>
+          <div class="okr-title">${obj.title}</div>
+          <div class="okr-meta">
+            <span class="okr-pct" style="color:${obj.color}">${avg}%</span>
+            <div class="okr-bar"><div class="okr-bar-fill" id="ob-${obj.id}-${containerId}" style="width:${avg}%; background:${obj.color};"></div></div>
+          </div>
+        </div>
+        <div class="okr-actions" onclick="event.stopPropagation()">
+          ${editable ? `<button class="btn btn-outline btn-sm" onclick="toggleAddKR('${obj.id}')">+ KR</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteObjective('${obj.id}')">🗑</button>` : ''}
+          <span class="chevron">⌄</span>
+        </div>
+      </div>
+      <div class="kr-list">
+        ${krHtml}
+        ${addKrHtml}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderAll() {
+  renderOKRList('okr-list-dash', false);
+  renderOKRList('okr-list-manage', true);
+  updateMetrics();
+}
+
+// ── INTERACTIONS ──────────────────────────────────────────────
+function toggleCard(objId) {
+  const obj = data.objectives.find(o => o.id === objId);
+  if (obj) obj.open = !obj.open;
+  // update all cards with this objective id across both containers
+  document.querySelectorAll('.okr-card').forEach(c => {
+    if (c.dataset.objid === objId) c.classList.toggle('open', obj.open);
+  });
+}
+
+function updateProgress(objId, krId, val, srcContainer) {
+  val = parseInt(val);
+  const obj = data.objectives.find(o => o.id === objId);
+  const kr = obj.krs.find(k => k.id === krId);
+  kr.progress = val;
+
+  ['okr-list-dash','okr-list-manage'].forEach(cid => {
+    const sv = document.getElementById('sv-' + krId);
+    const mf = document.getElementById('mf-' + krId + '-' + cid);
+    if (sv) sv.textContent = val + '%';
+    if (mf) mf.style.width = val + '%';
+  });
+
+  const avg = calcObjAvg(obj);
+  ['okr-list-dash','okr-list-manage'].forEach(cid => {
+    const ob = document.getElementById('ob-' + objId + '-' + cid);
+    if (ob) ob.style.width = avg + '%';
+    const pctEl = ob && ob.closest('.okr-card').querySelector('.okr-pct');
+    if (pctEl) pctEl.textContent = avg + '%';
+  });
+
+  updateMetrics();
+  localStorage.setItem('acivi360-okr', JSON.stringify(data));
+}
+
+function updateKRText(objId, krId, text) {
+  const obj = data.objectives.find(o => o.id === objId);
+  const kr = obj.krs.find(k => k.id === krId);
+  kr.text = text.trim();
+  localStorage.setItem('acivi360-okr', JSON.stringify(data));
+}
+
+function toggleAddKR(objId) {
+  const form = document.getElementById('addkr-' + objId);
+  if (form) form.classList.toggle('visible');
+}
+
+function addKR(objId) {
+  const obj = data.objectives.find(o => o.id === objId);
+  const text = document.getElementById('nkr-text-' + objId).value.trim();
+  const baseline = document.getElementById('nkr-base-' + objId).value.trim();
+  const target = document.getElementById('nkr-target-' + objId).value.trim();
+  if (!text) { showToast('⚠️ Descreva o Key Result'); return; }
+  const num = obj.krs.length + 1;
+  const krId = obj.id.replace('O','KR') + '.' + num;
+  obj.krs.push({ id: krId, text, baseline: baseline || '—', target: target || '—', progress: 0 });
+  showToast('✅ KR adicionado!');
+  renderAll();
+}
+
+function deleteObjective(objId) {
+  if (!confirm('Tem certeza que deseja remover este objetivo e todos os seus KRs?')) return;
+  data.objectives = data.objectives.filter(o => o.id !== objId);
+  localStorage.setItem('acivi360-okr', JSON.stringify(data));
+  showToast('🗑️ Objetivo removido');
+  renderAll();
+}
+
+// ── ADD OBJECTIVE ─────────────────────────────────────────────
+let selectedEmoji = '🎯';
+let selectedColor = '#1A4BBF';
+let selectedBg = '#E6EEF9';
+
+function openAddObjective() {
+  document.getElementById('modal-overlay').classList.add('visible');
+  document.getElementById('new-obj-title').value = '';
+  selectedEmoji = '🎯';
+  selectedColor = '#1A4BBF';
+  selectedBg = '#E6EEF9';
+  document.querySelectorAll('.emoji-option').forEach(e => e.classList.toggle('selected', e.dataset.emoji === selectedEmoji));
+  document.querySelectorAll('.color-option').forEach(e => e.classList.toggle('selected', e.dataset.color === selectedColor));
+}
+
+function selectEmoji(el) {
+  selectedEmoji = el.dataset.emoji;
+  document.querySelectorAll('.emoji-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectColor(el) {
+  selectedColor = el.dataset.color;
+  selectedBg = el.dataset.bg;
+  document.querySelectorAll('.color-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function addObjective() {
+  const title = document.getElementById('new-obj-title').value.trim();
+  if (!title) { showToast('⚠️ Informe o título do objetivo'); return; }
+  const num = data.objectives.length + 1;
+  data.objectives.push({
+    id: 'O' + num,
+    label: 'Objetivo ' + num,
+    title,
+    color: selectedColor,
+    bg: selectedBg,
+    icon: selectedEmoji,
+    open: false,
+    krs: []
+  });
+  document.getElementById('modal-overlay').classList.remove('visible');
+  localStorage.setItem('acivi360-okr', JSON.stringify(data));
+  showToast('✅ Objetivo adicionado!');
+  renderAll();
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('visible');
+  }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// ── EXPORT / IMPORT ───────────────────────────────────────────
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'acivi360-okr-backup.json';
+  a.click();
+  showToast('📤 Exportado com sucesso!');
+}
+
+function importData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        data = JSON.parse(ev.target.result);
+        localStorage.setItem('acivi360-okr', JSON.stringify(data));
+        renderAll();
+        showToast('✅ Dados importados!');
+      } catch { showToast('❌ Arquivo inválido'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetData() {
+  if (!confirm('Isso irá apagar todo o progresso atual. Deseja continuar?')) return;
+  data = JSON.parse(JSON.stringify(defaultData));
+  localStorage.removeItem('acivi360-okr');
+  renderAll();
+  showToast('🔄 Dados resetados');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+loadData();
+renderAll();
+</script>
+</body>
+</html>
