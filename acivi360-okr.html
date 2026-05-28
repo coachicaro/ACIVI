@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACIVI 360 — Sistema OKR</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:        #1A4BBF;
+  --blue-light:  #E6EEF9;
+  --navy:        #0A1E6E;
+  --teal:        #0F6E56;
+  --teal-light:  #E1F5EE;
+  --coral:       #C0390F;
+  --coral-light: #FAECE7;
+  --gold:        #F5A800;
+  --gold-light:  #FEF4DC;
+  --green:       #3B6D11;
+  --green-light: #EAF3DE;
+  --bg:          #EEF2FA;
+  --surface:     #FFFFFF;
+  --border:      rgba(10,30,110,0.1);
+  --border-md:   rgba(10,30,110,0.18);
+  --text:        #0A1E6E;
+  --text-2:      #3A4F8A;
+  --text-3:      #7A8FC2;
+  --r:           12px;
+  --r-sm:        8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+
+/* ══ LOGIN ══════════════════════════════════════════════════════ */
+.login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0A1E6E 0%,#1A4BBF 60%,#0A1E6E 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-screen.hidden{display:none;}
+.login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:360px;max-width:95vw;box-shadow:0 32px 80px rgba(10,30,110,.35);text-align:center;}
+.login-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#0A1E6E;margin-bottom:4px;}
+.login-sub{font-size:12px;color:#7A8FC2;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2rem;}
+.login-title{font-size:15px;font-weight:500;color:#0A1E6E;margin-bottom:1.25rem;}
+.user-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;}
+.user-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;border:1.5px solid #E6EEF9;background:#F5F8FF;cursor:pointer;transition:all .15s;width:100%;text-align:left;}
+.user-btn:hover,.user-btn.selected{border-color:#1A4BBF;background:#E6EEF9;}
+.u-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
+.u-name{font-size:14px;font-weight:600;color:#0A1E6E;}
+.u-role{font-size:11px;color:#7A8FC2;}
+.u-check{font-size:18px;opacity:0;transition:opacity .15s;margin-left:auto;}
+.user-btn.selected .u-check{opacity:1;}
+.pin-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:8px;}
+.pin-input{width:48px;height:54px;border:1.5px solid #E6EEF9;border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:#0A1E6E;background:#F5F8FF;outline:none;transition:border-color .15s;font-family:'DM Sans',sans-serif;-webkit-text-security:disc;}
+.pin-input:focus{border-color:#1A4BBF;background:#fff;}
+.pin-input.error{border-color:#C0390F;background:#FAECE7;}
+.pin-error{font-size:12px;color:#C0390F;min-height:18px;margin-bottom:12px;}
+.login-btn{width:100%;padding:13px;background:#0A1E6E;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-bottom:.5rem;}
+.login-btn:hover{background:#1A4BBF;}
+.login-btn:disabled{background:#7A8FC2;cursor:not-allowed;}
+.login-step{display:none;}
+.login-step.active{display:block;}
+.login-back{font-size:12px;color:#7A8FC2;cursor:pointer;margin-bottom:1rem;display:inline-flex;align-items:center;gap:4px;}
+.login-back:hover{color:#0A1E6E;}
+
+/* ══ SIDEBAR ════════════════════════════════════════════════════ */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--navy);padding:2rem 1.5rem;display:flex;flex-direction:column;z-index:100;}
+.sb-logo{font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:#fff;letter-spacing:-.5px;margin-bottom:.25rem;}
+.sb-sub{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2.5rem;}
+.sb-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);margin-bottom:.75rem;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:.6rem .75rem;border-radius:var(--r-sm);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px;text-decoration:none;}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:#fff;}
+.sb-bottom{margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);}
+.phase-pill{background:rgba(255,255,255,.08);border-radius:var(--r-sm);padding:.75rem;}
+.phase-pill-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
+.phase-pill-val{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;}
+.phase-pill-sub{font-size:11px;color:rgba(255,255,255,.45);}
+
+/* ══ MAIN ════════════════════════════════════════════════════════ */
+.main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;gap:1rem;}
+.page-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.2;}
+.page-sub{font-size:13px;color:var(--text-2);margin-top:4px;}
+.hdr-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-md);border-radius:20px;padding:5px 12px 5px 6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);transition:background .15s;}
+.user-pill:hover{background:var(--blue-light);}
+.up-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+
+/* ══ BUTTONS ════════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--blue);}
+.btn-outline{background:var(--surface);color:var(--text);border:1px solid var(--border-md);}
+.btn-outline:hover{background:var(--bg);}
+.btn-danger{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.btn-danger:hover{background:#fca5a5;}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:#d49200;}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-xs{padding:3px 8px;font-size:11px;}
+
+/* ══ METRICS ════════════════════════════════════════════════════ */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;}
+.metric-card{background:var(--surface);border-radius:var(--r);padding:1.25rem;border:1px solid var(--border);}
+.m-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:8px;}
+.m-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;}
+.m-sub{font-size:12px;color:var(--text-2);margin-top:6px;}
+
+/* ══ BANNERS ════════════════════════════════════════════════════ */
+.banner{border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;font-size:13px;}
+.banner-gold{background:var(--gold-light);border:1px solid var(--gold);color:#7A4800;}
+.banner-red{background:var(--coral-light);border:1px solid var(--coral);color:#7A1800;}
+
+/* ══ OKR CARDS ══════════════════════════════════════════════════ */
+.okr-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:1rem;transition:box-shadow .2s;}
+.okr-card:hover{box-shadow:0 4px 24px rgba(10,30,110,.07);}
+.okr-hdr{padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:14px;cursor:pointer;border-bottom:1px solid var(--border);}
+.okr-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.okr-info{flex:1;min-width:0;}
+.okr-label{font-size:11px;font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+.okr-title-text{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.3;}
+.okr-meta{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap;}
+.okr-pct{font-size:13px;font-weight:600;}
+.okr-bar{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;max-width:180px;}
+.okr-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
+.okr-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.chevron{font-size:18px;color:var(--text-3);transition:transform .2s;user-select:none;}
+.okr-card.open .chevron{transform:rotate(180deg);}
+
+/* Status badges */
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.s-green{background:#dcfce7;color:#166534;}
+.s-yellow{background:#fef9c3;color:#854d0e;}
+.s-red{background:#fee2e2;color:#991b1b;}
+.s-gray{background:#f1f5f9;color:#475569;}
+
+/* ══ KR LIST ════════════════════════════════════════════════════ */
+.kr-list{display:none;}
+.okr-card.open .kr-list{display:block;}
+.kr-item{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start;}
+.kr-item:last-child{border-bottom:none;}
+.kr-num{font-size:11px;font-weight:700;color:var(--text-3);padding-top:2px;white-space:nowrap;}
+.kr-text{font-size:14px;color:var(--text);line-height:1.5;}
+.kr-text[contenteditable="true"]:focus{outline:1px dashed var(--blue);border-radius:4px;padding:2px 4px;}
+.kr-details{font-size:12px;color:var(--text-3);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;}
+.kr-right{text-align:right;min-width:150px;}
+.kr-target-lbl{font-size:11px;color:var(--text-3);}
+.kr-target-val{font-size:13px;font-weight:600;color:var(--text);margin-top:1px;margin-bottom:6px;}
+.kr-slider-row{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:4px;}
+.kr-pct-lbl{font-size:12px;font-weight:500;color:var(--text-2);min-width:30px;text-align:right;}
+input[type=range]{-webkit-appearance:none;width:90px;height:4px;background:var(--bg);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--navy);cursor:pointer;transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
+.kr-mini-bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-bottom:6px;}
+.kr-mini-fill{height:100%;border-radius:2px;transition:width .3s;}
+.kr-status-row{display:flex;gap:4px;justify-content:flex-end;margin-bottom:4px;}
+.s-btn{padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .1s;background:none;}
+.s-btn.active-green{background:#dcfce7;color:#166534;border-color:#86efac;}
+.s-btn.active-yellow{background:#fef9c3;color:#854d0e;border-color:#fde047;}
+.s-btn.active-red{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+.s-btn:not([class*="active"]){color:var(--text-3);border-color:var(--border-md);}
+.s-btn:hover{opacity:.8;}
+.owner-chip{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--navy);border-radius:20px;font-size:11px;padding:2px 8px;cursor:pointer;}
+.due-chip{display:inline-flex;align-items:center;gap:4px;background:var(--bg);color:var(--text-2);border-radius:20px;font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid var(--border-md);}
+.due-chip.overdue{background:var(--coral-light);color:var(--coral);border-color:var(--coral);}
+.due-chip.soon{background:var(--gold-light);color:#7A4800;border-color:var(--gold);}
+
+/* ══ CHECK-IN ════════════════════════════════════════════════════ */
+.checkin-section{padding:.75rem 1.5rem;background:#FAFCFF;border-top:1px dashed var(--border-md);}
+.checkin-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;}
+.checkin-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .75rem;margin-bottom:.4rem;font-size:12px;color:var(--text-2);}
+.checkin-entry-date{font-size:10px;color:var(--text-3);margin-bottom:2px;}
+.checkin-form{display:flex;gap:6px;margin-top:.5rem;}
+.checkin-input{flex:1;padding:6px 10px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text);}
+.checkin-input:focus{border-color:var(--blue);}
+
+/* ══ ADD KR FORM ════════════════════════════════════════════════ */
+.add-kr-form{padding:1rem 1.5rem;background:#FAFCFF;border-top:1px dashed var(--border-md);display:none;}
+.add-kr-form.visible{display:block;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:11px;color:var(--text-2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.form-input{padding:8px 12px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;}
+.form-input:focus{border-color:var(--blue);}
+.form-select{padding:8px 12px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);outline:none;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;}
+
+/* ══ MODAL ══════════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;}
+.modal-overlay.visible{display:flex;}
+.modal{background:var(--surface);border-radius:var(--r);padding:2rem;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1.5rem;}
+.modal-form-group{margin-bottom:1rem;}
+.color-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.color-option{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s;}
+.color-option.selected{border-color:var(--text);}
+.emoji-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.emoji-option{width:36px;height:36px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .1s;}
+.emoji-option:hover,.emoji-option.selected{background:var(--bg);border-color:var(--blue);}
+
+/* ══ SECTIONS ════════════════════════════════════════════════════ */
+.section{display:none;}
+.section.active{display:block;}
+
+/* ══ TIMELINE (Roadmap) ══════════════════════════════════════════ */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border-md);border-radius:var(--r);overflow:hidden;margin-bottom:2rem;}
+.tl-phase{background:var(--surface);padding:1.25rem;}
+.tl-phase.current{background:var(--gold-light);}
+.tl-num{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:4px;}
+.tl-name{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:8px;}
+.tl-phase.current .tl-name{color:var(--navy);}
+.tl-invest{font-size:12px;color:var(--text-2);margin-bottom:4px;}
+.tl-gain{display:inline-block;background:var(--bg);border-radius:4px;padding:2px 6px;margin:2px 2px 0 0;color:var(--text-2);font-size:11px;}
+.tl-phase.current .tl-gain{background:var(--gold-light);color:#7A4800;}
+.cur-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:var(--navy);border-radius:20px;font-size:10px;padding:2px 8px;margin-bottom:8px;font-weight:700;}
+
+/* ══ PRESENTATION MODE ══════════════════════════════════════════ */
+.pres-mode{display:none;position:fixed;inset:0;background:var(--navy);z-index:500;padding:3rem;overflow:auto;}
+.pres-mode.active{display:block;}
+.pres-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem;}
+.pres-logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:#fff;}
+.pres-quarter{font-size:16px;color:rgba(255,255,255,.6);margin-top:4px;}
+.pres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.pres-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.5rem;}
+.pres-obj-label{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
+.pres-obj-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:1rem;line-height:1.3;}
+.pres-pct{font-family:'Playfair Display',serif;font-size:40px;font-weight:800;margin-bottom:.5rem;}
+.pres-bar{height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-bottom:1rem;}
+.pres-bar-fill{height:100%;border-radius:3px;}
+.pres-kr-row{font-size:12px;color:rgba(255,255,255,.7);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;gap:8px;}
+.pres-kr-row:last-child{border-bottom:none;}
+.pres-overall{text-align:center;margin-bottom:3rem;}
+.pres-overall-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:800;color:var(--gold);}
+.pres-overall-lbl{font-size:16px;color:rgba(255,255,255,.6);}
+
+/* ══ HISTORY CHART ══════════════════════════════════════════════ */
+.history-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem;}
+.history-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:1rem;}
+.chart-canvas-wrap{position:relative;height:160px;}
+canvas#histChart{width:100%!important;height:160px!important;}
+.chart-empty{text-align:center;padding:2rem;color:var(--text-3);font-size:13px;}
+
+/* ══ DEADLINE ALERTS ════════════════════════════════════════════ */
+.alert-section{margin-bottom:1.5rem;}
+.alert-item{display:flex;align-items:center;gap:10px;background:var(--coral-light);border:1px solid var(--coral);border-radius:var(--r-sm);padding:.75rem 1rem;margin-bottom:.5rem;font-size:13px;color:#7A1800;}
+.alert-item.warn{background:var(--gold-light);border-color:var(--gold);color:#7A4800;}
+
+/* ══ SETTINGS ════════════════════════════════════════════════════ */
+.settings-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;}
+.settings-title{font-family:'Playfair Display',serif;font-weight:700;font-size:16px;margin-bottom:1rem;}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border);}
+.settings-row:last-child{border-bottom:none;}
+.settings-key{font-size:13px;color:var(--text-2);}
+.settings-val{font-size:13px;font-weight:500;}
+
+/* ══ TOAST ══════════════════════════════════════════════════════ */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:#fff;padding:12px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:500;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════════ */
+@media(max-width:900px){.sidebar{width:200px;}.main{margin-left:200px;padding:1.5rem;}.metrics-grid{grid-template-columns:repeat(2,1fr);}.pres-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:680px){.sidebar{display:none;}.main{margin-left:0;}.timeline{grid-template-columns:1fr 1fr;}.pres-mode{padding:1.5rem;}.pres-grid{grid-template-columns:1fr;}}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <div class="sb-logo">ACIVI 360</div>
+  <div class="sb-sub">Sistema OKR</div>
+  <div class="sb-label">Navegação</div>
+  <a class="nav-item active" onclick="showSection('dashboard',this)">📊 Dashboard</a>
+  <a class="nav-item" onclick="showSection('okrs',this)">🎯 Objetivos & KRs</a>
+  <a class="nav-item" onclick="showSection('roadmap',this)">🗺️ Roadmap</a>
+  <a class="nav-item" onclick="showSection('settings',this)">⚙️ Configurações</a>
+  <div class="sb-bottom">
+    <div class="phase-pill">
+      <div class="phase-pill-label">Fase atual</div>
+      <div class="phase-pill-val">Fase 1 · Q2</div>
+      <div class="phase-pill-sub">Prospecção · 2026</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- DASHBOARD -->
+  <div id="sec-dashboard" class="section active">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Dashboard OKR</div>
+        <div class="page-sub">Fase 1 — Prospecção · Q2 2026</div>
+      </div>
+      <div class="hdr-actions">
+        <div class="user-pill" onclick="doLogout()" id="user-pill" title="Clique para sair">
+          <div class="up-av" id="pill-av" style="background:var(--blue);">—</div>
+          <span id="pill-name">—</span>
+        </div>
+        <button class="btn btn-gold" onclick="openPresMode()">📽️ Apresentar</button>
+        <button class="btn btn-outline" onclick="exportPDF()">📄 PDF</button>
+        <button class="btn btn-outline" onclick="exportData()">📤 Exportar</button>
+        <button class="btn btn-primary" onclick="saveAll()">💾 Salvar</button>
+      </div>
+    </div>
+
+    <div class="banner banner-gold">
+      <span style="font-size:20px;">✅</span>
+      <div><strong>Investimento Q2 2026: R$ 0</strong> — Fase de prospecção não requer aporte financeiro. Ganho esperado: Benefícios + Associados.</div>
+    </div>
+
+    <div id="alert-section" class="alert-section"></div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="m-label">Objetivos</div>
+        <div class="m-val" id="m-objectives">3</div>
+        <div class="m-sub">neste trimestre</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Key Results</div>
+        <div class="m-val" id="m-krs">11</div>
+        <div class="m-sub">métricas mensuráveis</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">Progresso geral</div>
+        <div class="m-val" id="m-progress" style="color:var(--blue);">0%</div>
+        <div class="m-sub">média de todos KRs</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-label">KRs em andamento</div>
+        <div class="m-val" id="m-active">0</div>
+        <div class="m-sub">com progresso &gt; 0%</div>
+      </div>
+    </div>
+
+    <div class="history-wrap">
+      <div class="history-title">📈 Evolução do Progresso — Check-ins Quinzenais</div>
+      <div class="chart-canvas-wrap" id="chart-wrap">
+        <div class="chart-empty" id="chart-empty">Nenhum check-in registrado ainda. O gráfico aparecerá após o primeiro check-in quinzenal.</div>
+        <canvas id="histChart" style="display:none;"></canvas>
+      </div>
+    </div>
+
+    <div id="okr-list-dash"></div>
+  </div>
+
+  <!-- OBJETIVOS -->
+  <div id="sec-okrs" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Objetivos & Key Results</div>
+        <div class="page-sub">Gerencie, edite e acompanhe cada KR</div>
+      </div>
+      <div class="hdr-actions">
+        <button class="btn btn-primary edit-only" onclick="openAddObjective()">+ Novo Objetivo</button>
+      </div>
+    </div>
+    <div id="okr-list-manage"></div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div id="sec-roadmap" class="section">
+    <div class="page-header">
+      <div><div class="page-title">Roadmap de Fases</div><div class="page-sub">Visão geral das 4 fases do projeto</div></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-phase current">
+        <div class="cur-badge">● Atual</div>
+        <div class="tl-num">Fase 1</div>
+        <div class="tl-name">Prospecção</div>
+        <div class="tl-invest">💰 R$ 0</div>
+        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div></div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-num">Fase 2</div>
+        <div class="tl-name">Crescimento</div>
+        <div class="tl-invest">💰 R$ 0</div>
+        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Seguidores</div></div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-num">Fase 3</div>
+        <div class="tl-name">Escala</div>
+        <div class="tl-invest">💰 20% novo fat.</div>
+        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Otimização</div></div>
+      </div>
+      <div class="tl-phase">
+        <div class="tl-num">Fase 4</div>
+        <div class="tl-name">Consolidação</div>
+        <div class="tl-invest">💰 20% novo fat.</div>
+        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Visibilidade</div></div>
+      </div>
+    </div>
+    <div style="background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;">
+      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);font-family:'Playfair Display',serif;font-weight:700;font-size:16px;">Detalhamento por fase</div>
+      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--blue);">Fase 1 — Prospecção</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Mapear necessidades dos colaboradores (Link de pesquisa)</li><li>• Proposta para atrair empresas parceiras</li><li>• Gerar benefícios aos colaboradores</li><li>• Construção da narrativa e estratégias para as mídias</li></ul></div>
+        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--teal);">Fase 2 — Crescimento</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Divulgar o projeto aos colaboradores</li><li>• Ativação de conteúdos ACIVI 360 no TikTok</li><li>• Crescimento Instagram (Meta: 5 mil seguidores)</li><li>• Meta de novos Associados: 500</li><li>• Criação de novo produto (Venda de espaço digital)</li></ul></div>
+        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--coral);">Fase 3 — Escala</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Sistema de gestão</li><li>• Contratação de pessoas</li><li>• Construção da vitrine no site e mídias</li><li>• Relatório com resultados (Mídia kit)</li><li>• Tráfego pago e atendimento com IA</li></ul></div>
+        <div><div style="font-weight:600;margin-bottom:.75rem;color:#7A4800;">Fase 4 — Consolidação</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Atendimento estruturado e automatizado</li><li>• Viabilizar aumento da mensalidade</li><li>• Associativismo essencial para colaboradores</li><li>• Capacitar outras entidades (case Federasul)</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="sec-settings" class="section">
+    <div class="page-header"><div><div class="page-title">Configurações</div><div class="page-sub">Dados e preferências do sistema</div></div></div>
+    <div class="settings-card">
+      <div class="settings-title">Sobre o projeto</div>
+      <div class="settings-row"><span class="settings-key">Projeto</span><span class="settings-val">ACIVI 360</span></div>
+      <div class="settings-row"><span class="settings-key">Fase atual</span><span class="settings-val">Fase 1 — Prospecção</span></div>
+      <div class="settings-row"><span class="settings-key">Ciclo</span><span class="settings-val">Trimestral · Q2 2026</span></div>
+      <div class="settings-row"><span class="settings-key">Check-ins</span><span class="settings-val">Quinzenais</span></div>
+      <div class="settings-row"><span class="settings-key">Metodologia</span><span class="settings-val">OKR (Objectives & Key Results)</span></div>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Check-in Quinzenal Global</div>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:1rem;">Registra um snapshot do progresso atual (% geral) para o gráfico de evolução.</p>
+      <button class="btn btn-primary edit-only" onclick="registerCheckin()">📌 Registrar Check-in Agora</button>
+    </div>
+    <div class="settings-card">
+      <div class="settings-title">Dados</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="exportData()">📤 Exportar JSON</button>
+        <button class="btn btn-outline" onclick="importData()">📥 Importar JSON</button>
+        <button class="btn btn-outline" onclick="exportPDF()">📄 Exportar PDF</button>
+        <button class="btn btn-danger edit-only" onclick="resetData()">🗑️ Resetar dados</button>
+      </div>
+      <div style="margin-top:1rem;font-size:12px;color:var(--text-3);">Dados salvos automaticamente no navegador (localStorage). Exporte JSON para fazer backup.</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ══ PRESENTATION MODE ══════════════════════════════════════ -->
+<div class="pres-mode" id="pres-mode">
+  <div class="pres-header">
+    <div><div class="pres-logo">ACIVI 360</div><div class="pres-quarter">Fase 1 — Prospecção · Q2 2026</div></div>
+    <button class="btn btn-outline" onclick="closePresMode()" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2);">✕ Fechar</button>
+  </div>
+  <div class="pres-overall">
+    <div class="pres-overall-num" id="pres-overall-pct">0%</div>
+    <div class="pres-overall-lbl">Progresso geral do quarter</div>
+  </div>
+  <div class="pres-grid" id="pres-grid"></div>
+</div>
+
+<!-- ══ ADD OBJECTIVE MODAL ════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Novo Objetivo</div>
+    <div class="modal-form-group">
+      <div class="form-label">Título do objetivo</div>
+      <input type="text" class="form-input" id="new-obj-title" placeholder="Ex: Conquistar novos associados" style="width:100%;">
+    </div>
+    <div class="modal-form-group">
+      <div class="form-label">Ícone</div>
+      <div class="emoji-picker" id="emoji-picker">
+        <span class="emoji-option selected" data-emoji="🎯" onclick="selectEmoji(this)">🎯</span>
+        <span class="emoji-option" data-emoji="📈" onclick="selectEmoji(this)">📈</span>
+        <span class="emoji-option" data-emoji="🤝" onclick="selectEmoji(this)">🤝</span>
+        <span class="emoji-option" data-emoji="💡" onclick="selectEmoji(this)">💡</span>
+        <span class="emoji-option" data-emoji="📣" onclick="selectEmoji(this)">📣</span>
+        <span class="emoji-option" data-emoji="🏆" onclick="selectEmoji(this)">🏆</span>
+        <span class="emoji-option" data-emoji="👥" onclick="selectEmoji(this)">👥</span>
+        <span class="emoji-option" data-emoji="🌱" onclick="selectEmoji(this)">🌱</span>
+      </div>
+    </div>
+    <div class="modal-form-group">
+      <div class="form-label">Cor</div>
+      <div class="color-picker" id="color-picker">
+        <div class="color-option selected" data-color="#1A4BBF" data-bg="#E6EEF9" style="background:#1A4BBF;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#0F6E56" data-bg="#E1F5EE" style="background:#0F6E56;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#C0390F" data-bg="#FAECE7" style="background:#C0390F;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#F5A800" data-bg="#FEF4DC" style="background:#F5A800;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#185FA5" data-bg="#E6F1FB" style="background:#185FA5;" onclick="selectColor(this)"></div>
+        <div class="color-option" data-color="#639922" data-bg="#EAF3DE" style="background:#639922;" onclick="selectColor(this)"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;">
+      <button class="btn btn-outline" onclick="document.getElementById('modal-overlay').classList.remove('visible')">Cancelar</button>
+      <button class="btn btn-primary" onclick="addObjective()">Adicionar Objetivo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN SCREEN ══════════════════════════════════════════ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">ACIVI 360</div>
+    <div class="login-sub">Sistema OKR</div>
+    <div class="login-step active" id="step-user">
+      <div class="login-title">Quem é você?</div>
+      <div class="user-grid">
+        <button class="user-btn" data-user="Aliny" onclick="selectUser(this)">
+          <div class="u-av" style="background:#1A4BBF;">AL</div>
+          <div style="flex:1;text-align:left;"><div class="u-name">Aliny</div><div class="u-role">Administradora</div></div>
+          <span class="u-check">✓</span>
+        </button>
+        <button class="user-btn" data-user="Paulo" onclick="selectUser(this)">
+          <div class="u-av" style="background:#0F6E56;">PA</div>
+          <div style="flex:1;text-align:left;"><div class="u-name">Paulo</div><div class="u-role">Administrador</div></div>
+          <span class="u-check">✓</span>
+        </button>
+        <button class="user-btn" data-user="Membros" onclick="selectUser(this)">
+          <div class="u-av" style="background:#F5A800;color:#0A1E6E;">MB</div>
+          <div style="flex:1;text-align:left;"><div class="u-name">Membros</div><div class="u-role">Acesso leitura</div></div>
+          <span class="u-check">✓</span>
+        </button>
+      </div>
+      <button class="login-btn" id="btn-next" disabled onclick="goToPin()">Continuar →</button>
+    </div>
+    <div class="login-step" id="step-pin">
+      <div class="login-back" onclick="backToUsers()">← Voltar</div>
+      <div class="login-title" id="pin-title">Digite seu PIN</div>
+      <div class="pin-inputs">
+        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p0" oninput="pinInput(0)">
+        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p1" oninput="pinInput(1)">
+        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p2" oninput="pinInput(2)">
+        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p3" oninput="pinInput(3)">
+      </div>
+      <div class="pin-error" id="pin-error"></div>
+      <button class="login-btn" onclick="doLogin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// DATA MODEL
+// ════════════════════════════════════════════════════════════
+const MEMBERS = ['Aliny','Paulo','(sem responsável)'];
+const defaultData = {
+  objectives:[
+    {
+      id:'O1',label:'Objetivo 1',
+      title:'Entender profundamente as necessidades dos colaboradores e estruturar a base da proposta de valor',
+      color:'#1A4BBF',bg:'#E6EEF9',icon:'👥',open:true,
+      krs:[
+        {id:'KR1.1',text:'Aplicar pesquisa de necessidades com link para ao menos 100 colaboradores respondentes',baseline:'0 respostas',target:'100 respostas',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-15',checkins:[]},
+        {id:'KR1.2',text:'Identificar e documentar as 5 principais demandas dos colaboradores por categoria de benefício',baseline:'0 categorias',target:'5 categorias',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-30',checkins:[]},
+        {id:'KR1.3',text:'Construir narrativa e estratégia de mídia aprovada pelo grupo (deck ou documento)',baseline:'Não iniciado',target:'Aprovado pelo grupo',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',checkins:[]},
+      ]
+    },
+    {
+      id:'O2',label:'Objetivo 2',
+      title:'Captar empresas parceiras e estruturar o portfólio inicial de benefícios para os colaboradores',
+      color:'#0F6E56',bg:'#E1F5EE',icon:'🤝',open:false,
+      krs:[
+        {id:'KR2.1',text:'Prospectar e apresentar proposta formal para ao menos 20 empresas parceiras potenciais',baseline:'0 empresas',target:'20 empresas',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',checkins:[]},
+        {id:'KR2.2',text:'Fechar parceria ativa com ao menos 5 empresas que gerem benefícios concretos aos colaboradores',baseline:'0 parcerias',target:'5 parcerias',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',checkins:[]},
+        {id:'KR2.3',text:'Catalogar e comunicar ao menos 10 benefícios disponíveis aos colaboradores',baseline:'0 benefícios',target:'10 benefícios',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
+        {id:'KR2.4',text:'Obter NPS ≥ 8 dos primeiros colaboradores que utilizaram algum benefício',baseline:'Não medido',target:'NPS ≥ 8',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
+      ]
+    },
+    {
+      id:'O3',label:'Objetivo 3',
+      title:'Estabelecer presença digital e associativa como base para crescimento nas próximas fases',
+      color:'#C0390F',bg:'#FAECE7',icon:'📣',open:false,
+      krs:[
+        {id:'KR3.1',text:'Definir e publicar o posicionamento da ACIVI 360 nas redes sociais (bio, visual, tom de voz)',baseline:'Não publicado',target:'Publicado e padronizado',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-07-31',checkins:[]},
+        {id:'KR3.2',text:'Alcançar 500 seguidores orgânicos no Instagram até o fim do trimestre',baseline:'0 seguidores',target:'500 seguidores',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
+        {id:'KR3.3',text:'Registrar ao menos 50 novos associados no período da Fase 1',baseline:'0 novos',target:'50 associados',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
+        {id:'KR3.4',text:'Publicar ao menos 12 conteúdos nas redes sociais (3 por semana no mês 1) sobre os benefícios ACIVI 360',baseline:'0 publicações',target:'12 publicações',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',checkins:[]},
+      ]
+    }
+  ],
+  globalCheckins:[] // [{date, pct}]
+};
+
+let data;
+function loadData(){
+  try{ const s=localStorage.getItem('acivi360-v2'); data=s?JSON.parse(s):JSON.parse(JSON.stringify(defaultData)); }
+  catch(e){ data=JSON.parse(JSON.stringify(defaultData)); }
+  // ensure fields exist on old data
+  data.objectives.forEach(o=>o.krs.forEach(k=>{
+    if(!k.status) k.status='gray';
+    if(!k.owner) k.owner='(sem responsável)';
+    if(!k.due) k.due='';
+    if(!k.checkins) k.checkins=[];
+  }));
+  if(!data.globalCheckins) data.globalCheckins=[];
+}
+function persist(){ localStorage.setItem('acivi360-v2',JSON.stringify(data)); }
+function saveAll(){ persist(); renderAll(); showToast('💾 Dados salvos!'); }
+
+// ════════════════════════════════════════════════════════════
+// METRICS
+// ════════════════════════════════════════════════════════════
+function allKRs(){ return data.objectives.flatMap(o=>o.krs); }
+function calcOverall(){ const ks=allKRs(); return ks.length?Math.round(ks.reduce((a,k)=>a+k.progress,0)/ks.length):0; }
+function calcObjAvg(obj){ return obj.krs.length?Math.round(obj.krs.reduce((a,k)=>a+k.progress,0)/obj.krs.length):0; }
+function updateMetrics(){
+  const ks=allKRs();
+  document.getElementById('m-objectives').textContent=data.objectives.length;
+  document.getElementById('m-krs').textContent=ks.length;
+  document.getElementById('m-progress').textContent=calcOverall()+'%';
+  document.getElementById('m-active').textContent=ks.filter(k=>k.progress>0).length;
+}
+
+// ════════════════════════════════════════════════════════════
+// DEADLINE ALERTS
+// ════════════════════════════════════════════════════════════
+function renderAlerts(){
+  const sec=document.getElementById('alert-section');
+  if(!sec) return;
+  const today=new Date(); today.setHours(0,0,0,0);
+  let html='';
+  allKRs().forEach(kr=>{
+    if(!kr.due||kr.progress>=100) return;
+    const due=new Date(kr.due+'T00:00:00');
+    const diff=Math.round((due-today)/(1000*60*60*24));
+    if(diff<0){
+      html+=`<div class="alert-item">⚠️ <strong>${kr.id}</strong> — "${kr.text.substring(0,60)}..." está <strong>atrasado</strong> (venceu ${Math.abs(diff)}d atrás)</div>`;
+    } else if(diff<=10){
+      html+=`<div class="alert-item warn">🔔 <strong>${kr.id}</strong> — "${kr.text.substring(0,60)}..." vence em <strong>${diff} dia${diff!==1?'s':''}</strong></div>`;
+    }
+  });
+  sec.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════════════════
+// HISTORY CHART
+// ════════════════════════════════════════════════════════════
+function renderChart(){
+  const pts=data.globalCheckins;
+  const empty=document.getElementById('chart-empty');
+  const canvas=document.getElementById('histChart');
+  if(!pts||pts.length<1){ empty.style.display='block'; canvas.style.display='none'; return; }
+  empty.style.display='none'; canvas.style.display='block';
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||600; const H=160;
+  canvas.width=W; canvas.height=H;
+  ctx.clearRect(0,0,W,H);
+  const pad={l:40,r:20,t:16,b:30};
+  const iW=W-pad.l-pad.r; const iH=H-pad.t-pad.b;
+  // grid
+  ctx.strokeStyle='rgba(10,30,110,.06)'; ctx.lineWidth=1;
+  [0,25,50,75,100].forEach(v=>{
+    const y=pad.t+iH*(1-v/100);
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+    ctx.fillStyle='#7A8FC2'; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='right';
+    ctx.fillText(v+'%',pad.l-6,y+4);
+  });
+  // line
+  const step=pts.length>1?iW/(pts.length-1):0;
+  ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x=pad.l+(pts.length===1?iW/2:i*step);
+    const y=pad.t+iH*(1-p.pct/100);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle='#1A4BBF'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.stroke();
+  // fill
+  ctx.lineTo(pad.l+(pts.length===1?iW/2:(pts.length-1)*step),pad.t+iH);
+  ctx.lineTo(pad.l+(pts.length===1?iW/2:0),pad.t+iH);
+  ctx.closePath();
+  ctx.fillStyle='rgba(26,75,191,.08)'; ctx.fill();
+  // dots + labels
+  pts.forEach((p,i)=>{
+    const x=pad.l+(pts.length===1?iW/2:i*step);
+    const y=pad.t+iH*(1-p.pct/100);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle='#1A4BBF'; ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+    // date label
+    const d=new Date(p.date); const lbl=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+    ctx.fillStyle='#7A8FC2'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center';
+    ctx.fillText(lbl,x,H-pad.b+14);
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// REGISTER GLOBAL CHECK-IN
+// ════════════════════════════════════════════════════════════
+function registerCheckin(){
+  const pct=calcOverall();
+  const today=new Date().toISOString().split('T')[0];
+  // avoid duplicate same day
+  if(data.globalCheckins.length && data.globalCheckins[data.globalCheckins.length-1].date===today){
+    showToast('⚠️ Já existe um check-in hoje. Aguarde a próxima quinzena.'); return;
+  }
+  data.globalCheckins.push({date:today,pct});
+  persist(); renderChart();
+  showToast(`📌 Check-in registrado: ${pct}% em ${today}`);
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER OKR LISTS
+// ════════════════════════════════════════════════════════════
+function statusClass(s){ return s==='green'?'s-green':s==='yellow'?'s-yellow':s==='red'?'s-red':'s-gray'; }
+function statusLabel(s){ return s==='green'?'🟢 No prazo':s==='yellow'?'🟡 Em risco':s==='red'?'🔴 Atrasado':'⚪ Indefinido'; }
+function dueClass(due){
+  if(!due) return 'due-chip';
+  const today=new Date(); today.setHours(0,0,0,0);
+  const d=new Date(due+'T00:00:00');
+  const diff=Math.round((d-today)/(1000*60*60*24));
+  if(diff<0) return 'due-chip overdue';
+  if(diff<=10) return 'due-chip soon';
+  return 'due-chip';
+}
+function fmtDate(due){ if(!due) return 'Sem prazo'; const d=new Date(due+'T00:00:00'); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+
+function renderOKRList(containerId, editable){
+  const container=document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML='';
+  data.objectives.forEach(obj=>{
+    const avg=calcObjAvg(obj);
+    const card=document.createElement('div');
+    card.className='okr-card'+(obj.open?' open':'');
+    card.dataset.objid=obj.id;
+
+    // KR rows
+    let krHtml=obj.krs.map(kr=>{
+      const sBtns=['green','yellow','red'].map(s=>
+        `<button class="s-btn${kr.status===s?' active-'+s:''}" onclick="setStatus('${obj.id}','${kr.id}','${s}')">${s==='green'?'🟢 OK':s==='yellow'?'🟡 Risco':'🔴 Atraso'}</button>`
+      ).join('');
+      const ownerOpts=MEMBERS.map(m=>`<option value="${m}"${kr.owner===m?' selected':''}>${m}</option>`).join('');
+      const checkinList=kr.checkins&&kr.checkins.length
+        ? kr.checkins.slice(-3).reverse().map(c=>`<div class="checkin-entry"><div class="checkin-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('')
+        : '<div style="font-size:12px;color:var(--text-3);">Nenhum check-in ainda.</div>';
+
+      return `<div class="kr-item">
+        <div class="kr-num">${kr.id}</div>
+        <div class="kr-body">
+          ${editable
+            ? `<div class="kr-text" contenteditable="true" onblur="updateKRText('${obj.id}','${kr.id}',this.innerText)">${kr.text}</div>`
+            : `<div class="kr-text">${kr.text}</div>`}
+          <div class="kr-details">
+            <span>Baseline: ${kr.baseline}</span>
+            <span class="${dueClass(kr.due)}" ${editable?`onclick="editDue('${obj.id}','${kr.id}')" title="Clique para editar prazo"`:''}>${fmtDate(kr.due)}</span>
+            ${editable
+              ? `<select class="owner-chip" style="border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;" onchange="setOwner('${obj.id}','${kr.id}',this.value)">${ownerOpts}</select>`
+              : `<span class="owner-chip">👤 ${kr.owner}</span>`}
+            <span class="status-badge ${statusClass(kr.status)}">${statusLabel(kr.status)}</span>
+          </div>
+        </div>
+        <div class="kr-right">
+          <div class="kr-target-lbl">Meta</div>
+          <div class="kr-target-val">${kr.target}</div>
+          ${editable?`<div class="kr-status-row">${sBtns}</div>`:''}
+          <div class="kr-slider-row">
+            <span class="kr-pct-lbl" id="sv-${kr.id}-${containerId}">${kr.progress}%</span>
+            <input type="range" min="0" max="100" step="5" value="${kr.progress}" style="accent-color:${obj.color}" ${!editable?'disabled':''} oninput="updateProgress('${obj.id}','${kr.id}',this.value,'${containerId}')">
+          </div>
+          <div class="kr-mini-bar"><div class="kr-mini-fill" id="mf-${kr.id}-${containerId}" style="width:${kr.progress}%;background:${obj.color};"></div></div>
+        </div>
+      </div>
+      ${editable?`<div class="checkin-section">
+        <div class="checkin-title"><span>💬 Check-ins quinzenais</span></div>
+        <div id="ci-list-${kr.id}">${checkinList}</div>
+        <div class="checkin-form">
+          <input class="checkin-input" id="ci-${kr.id}" placeholder="Atualização quinzenal — o que avançou?">
+          <button class="btn btn-primary btn-sm" onclick="addCheckin('${obj.id}','${kr.id}')">Registrar</button>
+        </div>
+      </div>`:''}`;
+    }).join('');
+
+    let addKrHtml=editable?`
+      <div class="add-kr-form" id="addkr-${obj.id}">
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1">
+            <div class="form-label">Descrição do Key Result</div>
+            <input type="text" class="form-input" id="nkr-text-${obj.id}" placeholder="Ex: Atingir 100 novos associados">
+          </div>
+          <div class="form-group"><div class="form-label">Baseline</div><input type="text" class="form-input" id="nkr-base-${obj.id}" placeholder="Ex: 0 associados"></div>
+          <div class="form-group"><div class="form-label">Meta</div><input type="text" class="form-input" id="nkr-target-${obj.id}" placeholder="Ex: 100 associados"></div>
+          <div class="form-group"><div class="form-label">Responsável</div><select class="form-select" id="nkr-owner-${obj.id}">${MEMBERS.map(m=>`<option>${m}</option>`).join('')}</select></div>
+          <div class="form-group"><div class="form-label">Prazo</div><input type="date" class="form-input" id="nkr-due-${obj.id}"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-outline btn-sm" onclick="toggleAddKR('${obj.id}')">Cancelar</button>
+          <button class="btn btn-primary btn-sm" onclick="addKR('${obj.id}')">Adicionar KR</button>
+        </div>
+      </div>` : '';
+
+    card.innerHTML=`
+      <div class="okr-hdr" onclick="toggleCard('${obj.id}')">
+        <div class="okr-icon" style="background:${obj.bg};">${obj.icon}</div>
+        <div class="okr-info">
+          <div class="okr-label">${obj.label}</div>
+          <div class="okr-title-text">${obj.title}</div>
+          <div class="okr-meta">
+            <span class="okr-pct" style="color:${obj.color};">${avg}%</span>
+            <div class="okr-bar"><div class="okr-bar-fill" id="ob-${obj.id}-${containerId}" style="width:${avg}%;background:${obj.color};"></div></div>
+            <span class="status-badge ${avg>=70?'s-green':avg>=30?'s-yellow':avg>0?'s-red':'s-gray'}">${avg>=70?'🟢 No prazo':avg>=30?'🟡 Em risco':avg>0?'🔴 Baixo':'⚪ Não iniciado'}</span>
+          </div>
+        </div>
+        <div class="okr-actions" onclick="event.stopPropagation()">
+          ${editable?`<button class="btn btn-outline btn-sm edit-only" onclick="toggleAddKR('${obj.id}')">+ KR</button>
+          <button class="btn btn-danger btn-sm edit-only" onclick="deleteObjective('${obj.id}')">🗑</button>`:''}
+          <span class="chevron">⌄</span>
+        </div>
+      </div>
+      <div class="kr-list">${krHtml}${addKrHtml}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function renderAll(){
+  renderOKRList('okr-list-dash',false);
+  renderOKRList('okr-list-manage',true);
+  updateMetrics();
+  renderAlerts();
+  renderChart();
+  applyRoleRestrictions();
+}
+
+// ════════════════════════════════════════════════════════════
+// INTERACTIONS
+// ════════════════════════════════════════════════════════════
+function toggleCard(objId){
+  const obj=data.objectives.find(o=>o.id===objId);
+  if(obj) obj.open=!obj.open;
+  document.querySelectorAll('.okr-card').forEach(c=>{
+    if(c.dataset.objid===objId) c.classList.toggle('open',obj.open);
+  });
+}
+
+function updateProgress(objId,krId,val,srcCid){
+  val=parseInt(val);
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  kr.progress=val;
+  ['okr-list-dash','okr-list-manage'].forEach(cid=>{
+    const sv=document.getElementById('sv-'+krId+'-'+cid);
+    const mf=document.getElementById('mf-'+krId+'-'+cid);
+    if(sv) sv.textContent=val+'%';
+    if(mf) mf.style.width=val+'%';
+  });
+  const avg=calcObjAvg(obj);
+  ['okr-list-dash','okr-list-manage'].forEach(cid=>{
+    const ob=document.getElementById('ob-'+objId+'-'+cid);
+    if(ob) ob.style.width=avg+'%';
+  });
+  document.querySelectorAll('.okr-card').forEach(c=>{
+    if(c.dataset.objid===objId){
+      const pctEl=c.querySelector('.okr-pct');
+      if(pctEl) pctEl.textContent=avg+'%';
+    }
+  });
+  updateMetrics();
+  persist();
+}
+
+function updateKRText(objId,krId,text){
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  kr.text=text.trim(); persist();
+}
+
+function setStatus(objId,krId,status){
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  kr.status=status; persist(); renderAll();
+}
+
+function setOwner(objId,krId,owner){
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  kr.owner=owner; persist();
+}
+
+function editDue(objId,krId){
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  const val=prompt('Prazo do KR (AAAA-MM-DD):',kr.due||'');
+  if(val===null) return;
+  kr.due=val.trim(); persist(); renderAll();
+}
+
+function toggleAddKR(objId){
+  const f=document.getElementById('addkr-'+objId);
+  if(f) f.classList.toggle('visible');
+}
+
+function addKR(objId){
+  const obj=data.objectives.find(o=>o.id===objId);
+  const text=document.getElementById('nkr-text-'+objId).value.trim();
+  const baseline=document.getElementById('nkr-base-'+objId).value.trim();
+  const target=document.getElementById('nkr-target-'+objId).value.trim();
+  const owner=document.getElementById('nkr-owner-'+objId).value;
+  const due=document.getElementById('nkr-due-'+objId).value;
+  if(!text){ showToast('⚠️ Descreva o Key Result'); return; }
+  const num=obj.krs.length+1;
+  const krId=obj.id.replace('O','KR')+'.'+num;
+  obj.krs.push({id:krId,text,baseline:baseline||'—',target:target||'—',progress:0,status:'gray',owner:owner||'(sem responsável)',due:due||'',checkins:[]});
+  showToast('✅ KR adicionado!'); persist(); renderAll();
+}
+
+function addCheckin(objId,krId){
+  const inp=document.getElementById('ci-'+krId);
+  const note=inp.value.trim();
+  if(!note){ showToast('⚠️ Escreva a atualização'); return; }
+  const obj=data.objectives.find(o=>o.id===objId);
+  const kr=obj.krs.find(k=>k.id===krId);
+  if(!kr.checkins) kr.checkins=[];
+  const today=new Date();
+  const dateStr=`${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
+  kr.checkins.push({date:dateStr,note,user:currentUser?currentUser.name:'—'});
+  inp.value='';
+  persist();
+  // re-render check-in list only
+  const listEl=document.getElementById('ci-list-'+krId);
+  if(listEl) listEl.innerHTML=kr.checkins.slice(-3).reverse().map(c=>`<div class="checkin-entry"><div class="checkin-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('');
+  showToast('💬 Check-in registrado!');
+}
+
+function deleteObjective(objId){
+  if(!confirm('Remover este objetivo e todos os seus KRs?')) return;
+  data.objectives=data.objectives.filter(o=>o.id!==objId);
+  persist(); showToast('🗑️ Objetivo removido'); renderAll();
+}
+
+// ════════════════════════════════════════════════════════════
+// ADD OBJECTIVE MODAL
+// ════════════════════════════════════════════════════════════
+let selEmoji='🎯',selColor='#1A4BBF',selBg='#E6EEF9';
+function openAddObjective(){
+  document.getElementById('modal-overlay').classList.add('visible');
+  document.getElementById('new-obj-title').value='';
+  selEmoji='🎯'; selColor='#1A4BBF'; selBg='#E6EEF9';
+  document.querySelectorAll('.emoji-option').forEach(e=>e.classList.toggle('selected',e.dataset.emoji===selEmoji));
+  document.querySelectorAll('.color-option').forEach(e=>e.classList.toggle('selected',e.dataset.color===selColor));
+}
+function selectEmoji(el){ selEmoji=el.dataset.emoji; document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); }
+function selectColor(el){ selColor=el.dataset.color; selBg=el.dataset.bg; document.querySelectorAll('.color-option').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); }
+function addObjective(){
+  const title=document.getElementById('new-obj-title').value.trim();
+  if(!title){ showToast('⚠️ Informe o título do objetivo'); return; }
+  const num=data.objectives.length+1;
+  data.objectives.push({id:'O'+num,label:'Objetivo '+num,title,color:selColor,bg:selBg,icon:selEmoji,open:false,krs:[]});
+  document.getElementById('modal-overlay').classList.remove('visible');
+  persist(); showToast('✅ Objetivo adicionado!'); renderAll();
+}
+function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('visible'); }
+
+// ════════════════════════════════════════════════════════════
+// PRESENTATION MODE
+// ════════════════════════════════════════════════════════════
+function openPresMode(){
+  const overall=calcOverall();
+  document.getElementById('pres-overall-pct').textContent=overall+'%';
+  const grid=document.getElementById('pres-grid');
+  grid.innerHTML=data.objectives.map(obj=>{
+    const avg=calcObjAvg(obj);
+    const krRows=obj.krs.map(kr=>`<div class="pres-kr-row"><span>${kr.id}: ${kr.text.substring(0,50)}${kr.text.length>50?'…':''}</span><span style="font-weight:600;color:${obj.color.replace('#','rgba(').replace(/^/,'').slice(0,-1)};opacity:.9;color:#fff;">${kr.progress}%</span></div>`).join('');
+    return `<div class="pres-card">
+      <div class="pres-obj-label">${obj.label}</div>
+      <div class="pres-obj-title">${obj.title}</div>
+      <div class="pres-pct" style="color:${obj.color};">${avg}%</div>
+      <div class="pres-bar"><div class="pres-bar-fill" style="width:${avg}%;background:${obj.color};"></div></div>
+      ${krRows}
+    </div>`;
+  }).join('');
+  document.getElementById('pres-mode').classList.add('active');
+}
+function closePresMode(){ document.getElementById('pres-mode').classList.remove('active'); }
+
+// ════════════════════════════════════════════════════════════
+// EXPORT PDF
+// ════════════════════════════════════════════════════════════
+function exportPDF(){
+  const overall=calcOverall();
+  const rows=data.objectives.map(obj=>{
+    const avg=calcObjAvg(obj);
+    const krs=obj.krs.map(kr=>`
+      <tr style="font-size:12px;">
+        <td style="padding:6px 8px;color:#555;">${kr.id}</td>
+        <td style="padding:6px 8px;">${kr.text}</td>
+        <td style="padding:6px 8px;text-align:center;">${kr.target}</td>
+        <td style="padding:6px 8px;text-align:center;">${kr.owner}</td>
+        <td style="padding:6px 8px;text-align:center;">${fmtDate(kr.due)}</td>
+        <td style="padding:6px 8px;text-align:center;font-weight:700;color:#1A4BBF;">${kr.progress}%</td>
+      </tr>`).join('');
+    return `<div style="margin-bottom:24px;">
+      <div style="background:#0A1E6E;color:#fff;padding:10px 14px;border-radius:8px 8px 0 0;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;">${obj.icon} ${obj.label}: ${obj.title} — ${avg}%</div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #E6EEF9;border-top:none;">
+        <thead><tr style="background:#EEF2FA;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#7A8FC2;">
+          <th style="padding:6px 8px;text-align:left;">ID</th><th style="padding:6px 8px;text-align:left;">Key Result</th>
+          <th style="padding:6px 8px;">Meta</th><th style="padding:6px 8px;">Responsável</th>
+          <th style="padding:6px 8px;">Prazo</th><th style="padding:6px 8px;">Progresso</th>
+        </tr></thead>
+        <tbody>${krs}</tbody>
+      </table></div>`;
+  }).join('');
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>body{font-family:'DM Sans',sans-serif;padding:40px;color:#0A1E6E;max-width:900px;margin:auto;}</style>
+    </head><body>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:2px solid #F5A800;">
+      <div><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:800;">ACIVI 360 — Sistema OKR</div>
+      <div style="font-size:14px;color:#7A8FC2;margin-top:4px;">Fase 1 · Prospecção · Q2 2026</div></div>
+      <div style="text-align:right;"><div style="font-family:'Playfair Display',serif;font-size:40px;font-weight:800;color:#1A4BBF;">${overall}%</div>
+      <div style="font-size:12px;color:#7A8FC2;">Progresso geral</div></div>
+    </div>
+    ${rows}
+    <div style="margin-top:32px;font-size:11px;color:#7A8FC2;text-align:center;">Gerado em ${new Date().toLocaleDateString('pt-BR')} · ACIVI 360 OKR System</div>
+    </body></html>`;
+  const w=window.open('','_blank');
+  w.document.write(html); w.document.close();
+  setTimeout(()=>w.print(),800);
+}
+
+// ════════════════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════════════════
+function showSection(name,el){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(name==='dashboard') renderChart();
+}
+
+// ════════════════════════════════════════════════════════════
+// EXPORT / IMPORT / RESET
+// ════════════════════════════════════════════════════════════
+function exportData(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='acivi360-okr-backup.json'; a.click(); showToast('📤 Exportado!');
+}
+function importData(){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=e=>{
+    const r=new FileReader();
+    r.onload=ev=>{ try{ data=JSON.parse(ev.target.result); persist(); renderAll(); showToast('✅ Importado!'); }catch{ showToast('❌ Arquivo inválido'); } };
+    r.readAsText(e.target.files[0]);
+  }; inp.click();
+}
+function resetData(){
+  if(!confirm('Apagar todo o progresso atual?')) return;
+  data=JSON.parse(JSON.stringify(defaultData));
+  localStorage.removeItem('acivi360-v2'); renderAll(); showToast('🔄 Dados resetados');
+}
+
+// ════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
+
+// ════════════════════════════════════════════════════════════
+// LOGIN SYSTEM
+// ════════════════════════════════════════════════════════════
+const USERS={
+  'Aliny':  {pin:'1234',color:'#1A4BBF',initials:'AL',role:'Administradora',canEdit:true},
+  'Paulo':  {pin:'5678',color:'#0F6E56',initials:'PA',role:'Administrador', canEdit:true},
+  'Membros':{pin:'0000',color:'#F5A800',initials:'MB',role:'Leitura',       canEdit:false},
+};
+let currentUser=null, selUserBtn=null;
+
+function selectUser(btn){
+  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected'); selUserBtn=btn;
+  document.getElementById('btn-next').disabled=false;
+}
+function goToPin(){
+  if(!selUserBtn) return;
+  document.getElementById('pin-title').textContent='Olá, '+selUserBtn.dataset.user+'! Digite seu PIN';
+  document.querySelectorAll('.pin-input').forEach(p=>{p.value='';p.classList.remove('error');});
+  document.getElementById('pin-error').textContent='';
+  document.getElementById('step-user').classList.remove('active');
+  document.getElementById('step-pin').classList.add('active');
+  document.getElementById('p0').focus();
+}
+function backToUsers(){ document.getElementById('step-pin').classList.remove('active'); document.getElementById('step-user').classList.add('active'); }
+function pinInput(idx){
+  const inp=document.getElementById('p'+idx);
+  inp.value=inp.value.replace(/[^0-9]/g,'');
+  if(inp.value.length===1&&idx<3) document.getElementById('p'+(idx+1)).focus();
+  document.querySelectorAll('.pin-input').forEach(p=>p.classList.remove('error'));
+  document.getElementById('pin-error').textContent='';
+}
+function doLogin(){
+  if(!selUserBtn) return;
+  const name=selUserBtn.dataset.user;
+  const entered=[0,1,2,3].map(i=>document.getElementById('p'+i).value).join('');
+  const user=USERS[name];
+  if(entered===user.pin){
+    currentUser={name,...user};
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('pill-name').textContent=name;
+    document.getElementById('pill-av').textContent=user.initials;
+    document.getElementById('pill-av').style.background=user.color;
+    applyRoleRestrictions();
+    showToast('👋 Bem-vindo(a), '+name+'!');
+  } else {
+    document.querySelectorAll('.pin-input').forEach(p=>p.classList.add('error'));
+    document.getElementById('pin-error').textContent='PIN incorreto. Tente novamente.';
+    document.querySelectorAll('.pin-input').forEach(p=>p.value='');
+    document.getElementById('p0').focus();
+  }
+}
+function applyRoleRestrictions(){
+  if(!currentUser) return;
+  const hide=!currentUser.canEdit;
+  document.querySelectorAll('.edit-only').forEach(el=>el.style.display=hide?'none':'');
+}
+function doLogout(){
+  if(!confirm('Deseja sair da sua conta?')) return;
+  currentUser=null; selUserBtn=null;
+  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('btn-next').disabled=true;
+  document.getElementById('step-pin').classList.remove('active');
+  document.getElementById('step-user').classList.add('active');
+  document.getElementById('login-screen').classList.remove('hidden');
+  document.querySelectorAll('.edit-only').forEach(el=>el.style.display='');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('step-pin').classList.contains('active')) doLogin();
+  if(e.key==='Escape'&&document.getElementById('pres-mode').classList.contains('active')) closePresMode();
+});
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+loadData();
+renderAll();
+</script>
+</body>
+</html>
