@@ -33,7 +33,7 @@ html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
 
 /* ══ LOGIN ══════════════════════════════════════════════════════ */
-.login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0A1E6E 0%,#1A4BBF 60%,#0A1E6E 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-screen{position:fixed;top:0;right:0;bottom:0;left:240px;background:linear-gradient(135deg,#0A1E6E 0%,#1A4BBF 60%,#0A1E6E 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
 .login-screen.hidden{display:none;}
 .login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:360px;max-width:95vw;box-shadow:0 32px 80px rgba(10,30,110,.35);text-align:center;}
 .login-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#0A1E6E;margin-bottom:4px;}
@@ -304,7 +304,7 @@ canvas#histChart{width:100%!important;height:160px!important;}
 
 /* ══ RESPONSIVE ══════════════════════════════════════════════════ */
 @media(max-width:900px){.sidebar{width:200px;}.main{margin-left:200px;padding:1.5rem;}.metrics-grid{grid-template-columns:repeat(2,1fr);}.pres-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:680px){.sidebar{display:none;}.main{margin-left:0;}.timeline{grid-template-columns:1fr 1fr;}.pres-mode{padding:1.5rem;}.pres-grid{grid-template-columns:1fr;}}
+@media(max-width:680px){.sidebar{display:none;}.main{margin-left:0;}.timeline{grid-template-columns:1fr 1fr;}.pres-mode{padding:1.5rem;}.pres-grid{grid-template-columns:1fr;}.login-screen{left:0;}}
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px;}
 </style>
@@ -1117,6 +1117,7 @@ function showSection(name,el){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if(el) el.classList.add('active');
   if(name==='dashboard') renderChart();
+  if(name==='meetings') renderMeetings();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1456,6 +1457,7 @@ function renderMeetings(){
 // INIT
 // ════════════════════════════════════════════════════════════
 loadData();
+ensureMeetings();
 renderAll();
 renderMeetings();
 </script>
