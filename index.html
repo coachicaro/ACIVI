@@ -195,6 +195,54 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
 .emoji-option{width:36px;height:36px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .1s;}
 .emoji-option:hover,.emoji-option.selected{background:var(--bg);border-color:var(--blue);}
 
+
+/* ══ MEETINGS ════════════════════════════════════════════════════ */
+.meet-list{display:flex;flex-direction:column;gap:12px;}
+.meet-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .2s;}
+.meet-card:hover{box-shadow:0 4px 24px rgba(10,30,110,.07);}
+.meet-card-hdr{padding:1.1rem 1.4rem;display:flex;align-items:flex-start;gap:14px;cursor:pointer;}
+.meet-date-badge{background:var(--navy);color:#fff;border-radius:10px;padding:.5rem .75rem;text-align:center;flex-shrink:0;min-width:52px;}
+.meet-date-day{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;line-height:1;}
+.meet-date-mon{font-size:10px;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-top:2px;}
+.meet-hdr-info{flex:1;min-width:0;}
+.meet-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.meet-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.meet-tag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--navy);border-radius:20px;font-size:11px;font-weight:600;padding:2px 10px;}
+.meet-tag.pending{background:var(--gold-light);color:#7A4800;}
+.meet-tag.done{background:var(--green-light);color:var(--green);}
+.meet-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.meet-body{display:none;border-top:1px solid var(--border);}
+.meet-card.open .meet-body{display:block;}
+.meet-card.open .chevron{transform:rotate(180deg);}
+.meet-section{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);}
+.meet-section:last-child{border-bottom:none;}
+.meet-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
+.topic-row{display:flex;align-items:flex-start;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+.topic-row:last-child{border-bottom:none;}
+.topic-num{font-size:11px;font-weight:700;color:var(--text-3);min-width:22px;padding-top:2px;}
+.topic-text{flex:1;color:var(--text);}
+.topic-del{font-size:14px;cursor:pointer;color:var(--text-3);opacity:0;transition:opacity .15s;padding:0 4px;}
+.topic-row:hover .topic-del{opacity:1;}
+.nextstep-row{display:flex;align-items:flex-start;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+.nextstep-row:last-child{border-bottom:none;}
+.ns-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--border-md);cursor:pointer;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
+.ns-check.done{background:var(--teal);border-color:var(--teal);color:#fff;}
+.ns-text{flex:1;color:var(--text);}
+.ns-text.done{text-decoration:line-through;color:var(--text-3);}
+.ns-owner{font-size:11px;color:var(--text-3);white-space:nowrap;}
+.ns-del{font-size:14px;cursor:pointer;color:var(--text-3);opacity:0;transition:opacity .15s;padding:0 4px;}
+.nextstep-row:hover .ns-del{opacity:1;}
+.add-inline-row{display:flex;gap:8px;margin-top:.75rem;}
+.add-inline-input{flex:1;padding:7px 11px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;}
+.add-inline-input:focus{border-color:var(--blue);}
+.resolution-box{background:var(--blue-light);border-radius:var(--r-sm);padding:.75rem 1rem;font-size:13px;color:var(--navy);line-height:1.6;white-space:pre-wrap;min-height:40px;}
+.resolution-box[contenteditable="true"]:focus{outline:1px dashed var(--blue);}
+.new-meet-form{background:var(--surface);border:1.5px dashed var(--border-md);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;display:none;}
+.new-meet-form.visible{display:block;}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pending-banner{background:var(--gold-light);border:1px solid var(--gold);border-radius:var(--r-sm);padding:.75rem 1rem;font-size:13px;color:#7A4800;margin-bottom:1rem;}
+.pending-banner strong{font-weight:700;}
+
 /* ══ SECTIONS ════════════════════════════════════════════════════ */
 .section{display:none;}
 .section.active{display:block;}
@@ -270,6 +318,7 @@ canvas#histChart{width:100%!important;height:160px!important;}
   <div class="sb-label">Navegação</div>
   <a class="nav-item active" onclick="showSection('dashboard',this)">📊 Dashboard</a>
   <a class="nav-item" onclick="showSection('okrs',this)">🎯 Objetivos & KRs</a>
+  <a class="nav-item" onclick="showSection('meetings',this)">📋 Reuniões</a>
   <a class="nav-item" onclick="showSection('roadmap',this)">🗺️ Roadmap</a>
   <a class="nav-item" onclick="showSection('settings',this)">⚙️ Configurações</a>
   <div class="sb-bottom">
@@ -426,6 +475,60 @@ canvas#histChart{width:100%!important;height:160px!important;}
         <button class="btn btn-danger edit-only" onclick="resetData()">🗑️ Resetar dados</button>
       </div>
       <div style="margin-top:1rem;font-size:12px;color:var(--text-3);">Dados salvos automaticamente no navegador (localStorage). Exporte JSON para fazer backup.</div>
+    </div>
+  </div>
+
+  <!-- MEETINGS -->
+  <div id="sec-meetings" class="section">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Reuniões</div>
+        <div class="page-sub">Documentação, tópicos, resoluções e próximos passos</div>
+      </div>
+      <div class="hdr-actions">
+        <button class="btn btn-primary edit-only" onclick="openNewMeeting()">+ Nova Reunião</button>
+      </div>
+    </div>
+
+    <!-- New meeting form -->
+    <div class="new-meet-form" id="new-meet-form">
+      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1.25rem;">📋 Nova Reunião</div>
+      <div id="pending-prefill-banner"></div>
+      <div class="form-2col" style="margin-bottom:12px;">
+        <div class="form-group">
+          <div class="form-label">Título da reunião</div>
+          <input type="text" class="form-input" id="nm-title" placeholder="Ex: Reunião de Prospecção">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Data</div>
+          <input type="date" class="form-input" id="nm-date">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Local / Plataforma</div>
+          <input type="text" class="form-input" id="nm-local" placeholder="Ex: Sala de reuniões / Google Meet">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Participantes</div>
+          <input type="text" class="form-input" id="nm-participants" placeholder="Ex: Aliny, Paulo, Diretoria">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:12px;">
+        <div class="form-label">Tópicos da pauta</div>
+        <div id="nm-topics-list" style="margin-bottom:8px;"></div>
+        <div class="add-inline-row">
+          <input class="add-inline-input" id="nm-topic-inp" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){addNewMeetTopic();event.preventDefault();}">
+          <button class="btn btn-outline btn-sm" onclick="addNewMeetTopic()">+ Adicionar</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+        <button class="btn btn-outline" onclick="closeNewMeeting()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveMeeting()">Criar Reunião</button>
+      </div>
+    </div>
+
+    <div class="meet-list" id="meet-list"></div>
+    <div id="meet-empty" style="text-align:center;padding:3rem;color:var(--text-3);font-size:14px;display:none;">
+      Nenhuma reunião registrada ainda.<br>Clique em <strong>+ Nova Reunião</strong> para começar.
     </div>
   </div>
 
@@ -1115,11 +1218,246 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&document.getElementById('pres-mode').classList.contains('active')) closePresMode();
 });
 
+
+// ════════════════════════════════════════════════════════════
+// MEETINGS MODULE
+// ════════════════════════════════════════════════════════════
+
+// ensure meetings array exists on data
+function ensureMeetings(){ if(!data.meetings) data.meetings=[]; }
+
+let newMeetTopics = [];
+
+function openNewMeeting(){
+  ensureMeetings();
+  newMeetTopics = [];
+  document.getElementById('nm-title').value = '';
+  document.getElementById('nm-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('nm-local').value = '';
+  document.getElementById('nm-participants').value = '';
+  document.getElementById('nm-topic-inp').value = '';
+  renderNewMeetTopics();
+
+  // Pre-fill from pending next steps of last meeting
+  const banner = document.getElementById('pending-prefill-banner');
+  const pending = getPendingNextSteps();
+  if(pending.length){
+    banner.innerHTML = `<div class="pending-banner">🔔 <strong>${pending.length} próximo(s) passo(s) pendente(s)</strong> da reunião anterior foram pré-adicionados como tópicos.</div>`;
+    pending.forEach(ns => { newMeetTopics.push('↩ (Pendente) ' + ns.text); });
+    renderNewMeetTopics();
+  } else {
+    banner.innerHTML = '';
+  }
+  document.getElementById('new-meet-form').classList.add('visible');
+}
+
+function closeNewMeeting(){
+  document.getElementById('new-meet-form').classList.remove('visible');
+  newMeetTopics = [];
+}
+
+function getPendingNextSteps(){
+  ensureMeetings();
+  if(!data.meetings.length) return [];
+  const last = data.meetings[data.meetings.length - 1];
+  return (last.nextSteps || []).filter(ns => !ns.done);
+}
+
+function addNewMeetTopic(){
+  const inp = document.getElementById('nm-topic-inp');
+  const val = inp.value.trim();
+  if(!val) return;
+  newMeetTopics.push(val);
+  inp.value = '';
+  renderNewMeetTopics();
+}
+
+function removeNewMeetTopic(i){
+  newMeetTopics.splice(i,1);
+  renderNewMeetTopics();
+}
+
+function renderNewMeetTopics(){
+  const el = document.getElementById('nm-topics-list');
+  el.innerHTML = newMeetTopics.map((t,i) => `
+    <div class="topic-row">
+      <span class="topic-num">${i+1}.</span>
+      <span class="topic-text">${t}</span>
+      <span class="topic-del" onclick="removeNewMeetTopic(${i})">✕</span>
+    </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);padding:.25rem 0;">Nenhum tópico adicionado.</div>';
+}
+
+function saveMeeting(){
+  const title = document.getElementById('nm-title').value.trim();
+  const date  = document.getElementById('nm-date').value;
+  if(!title){ showToast('⚠️ Informe o título da reunião'); return; }
+  if(!date)  { showToast('⚠️ Informe a data');             return; }
+  ensureMeetings();
+  const id = 'M' + Date.now();
+  data.meetings.push({
+    id, title, date,
+    local:        document.getElementById('nm-local').value.trim(),
+    participants: document.getElementById('nm-participants').value.trim(),
+    topics:       newMeetTopics.map(t=>({text:t})),
+    resolutions:  '',
+    nextSteps:    [],
+    open:         true,
+  });
+  persist();
+  closeNewMeeting();
+  renderMeetings();
+  showToast('✅ Reunião criada!');
+}
+
+function toggleMeeting(id){
+  ensureMeetings();
+  const m = data.meetings.find(x=>x.id===id);
+  if(m){ m.open=!m.open; persist(); renderMeetings(); }
+}
+
+function deleteMeeting(id){
+  if(!confirm('Remover esta reunião?')) return;
+  data.meetings = data.meetings.filter(x=>x.id!==id);
+  persist(); renderMeetings(); showToast('🗑️ Reunião removida');
+}
+
+function addTopic(meetId){
+  const inp = document.getElementById('ti-'+meetId);
+  const val = inp.value.trim();
+  if(!val) return;
+  const m = data.meetings.find(x=>x.id===meetId);
+  m.topics.push({text:val});
+  inp.value='';
+  persist(); renderMeetings();
+}
+
+function removeTopic(meetId, ti){
+  const m = data.meetings.find(x=>x.id===meetId);
+  m.topics.splice(ti,1);
+  persist(); renderMeetings();
+}
+
+function addNextStep(meetId){
+  const inp  = document.getElementById('nsi-'+meetId);
+  const own  = document.getElementById('nso-'+meetId);
+  const val  = inp.value.trim();
+  if(!val) return;
+  const m = data.meetings.find(x=>x.id===meetId);
+  if(!m.nextSteps) m.nextSteps=[];
+  m.nextSteps.push({text:val, owner: own?own.value:'—', done:false});
+  inp.value='';
+  persist(); renderMeetings();
+}
+
+function removeNextStep(meetId, ni){
+  const m = data.meetings.find(x=>x.id===meetId);
+  m.nextSteps.splice(ni,1);
+  persist(); renderMeetings();
+}
+
+function toggleNextStep(meetId, ni){
+  const m = data.meetings.find(x=>x.id===meetId);
+  m.nextSteps[ni].done = !m.nextSteps[ni].done;
+  persist(); renderMeetings();
+}
+
+function saveResolution(meetId, text){
+  const m = data.meetings.find(x=>x.id===meetId);
+  m.resolutions = text;
+  persist();
+}
+
+function fmtMeetDate(dateStr){
+  if(!dateStr) return {day:'—',mon:'—'};
+  const d = new Date(dateStr+'T00:00:00');
+  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return {day:String(d.getDate()).padStart(2,'0'), mon:months[d.getMonth()]+' '+d.getFullYear()};
+}
+
+function renderMeetings(){
+  ensureMeetings();
+  const list = document.getElementById('meet-list');
+  const empty = document.getElementById('meet-empty');
+  if(!list) return;
+
+  const meetings = [...data.meetings].reverse(); // newest first
+  if(!meetings.length){ list.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  const canEdit = currentUser && currentUser.canEdit;
+  list.innerHTML = meetings.map(m=>{
+    const {day,mon} = fmtMeetDate(m.date);
+    const pending = (m.nextSteps||[]).filter(ns=>!ns.done).length;
+    const total   = (m.nextSteps||[]).length;
+    const topicsHtml = (m.topics||[]).map((t,ti)=>`
+      <div class="topic-row">
+        <span class="topic-num">${ti+1}.</span>
+        <span class="topic-text">${t.text}</span>
+        ${canEdit?`<span class="topic-del" onclick="removeTopic('${m.id}',${ti})">✕</span>`:''}
+      </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);">Nenhum tópico registrado.</div>';
+
+    const nsHtml = (m.nextSteps||[]).map((ns,ni)=>`
+      <div class="nextstep-row">
+        <div class="ns-check ${ns.done?'done':''}" onclick="toggleNextStep('${m.id}',${ni})">${ns.done?'✓':''}</div>
+        <span class="ns-text ${ns.done?'done':''}">${ns.text}</span>
+        <span class="ns-owner">👤 ${ns.owner||'—'}</span>
+        ${canEdit?`<span class="ns-del" onclick="removeNextStep('${m.id}',${ni})">✕</span>`:''}
+      </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);">Nenhum próximo passo definido.</div>';
+
+    const ownerOpts = MEMBERS.map(mm=>`<option>${mm}</option>`).join('');
+
+    return `<div class="meet-card ${m.open?'open':''}" id="mc-${m.id}">
+      <div class="meet-card-hdr" onclick="toggleMeeting('${m.id}')">
+        <div class="meet-date-badge"><div class="meet-date-day">${day}</div><div class="meet-date-mon">${mon}</div></div>
+        <div class="meet-hdr-info">
+          <div class="meet-title">${m.title}</div>
+          <div class="meet-meta">
+            ${m.local?`<span class="meet-tag">📍 ${m.local}</span>`:''}
+            ${m.participants?`<span class="meet-tag">👥 ${m.participants}</span>`:''}
+            ${total?`<span class="meet-tag ${pending?'pending':'done'}">${pending?'⏳ '+pending+' pendente'+(pending!==1?'s':''):'✅ Tudo feito'}</span>`:''}
+          </div>
+        </div>
+        <div class="meet-actions" onclick="event.stopPropagation()">
+          ${canEdit?`<button class="btn btn-danger btn-xs edit-only" onclick="deleteMeeting('${m.id}')">🗑</button>`:''}
+          <span class="chevron">⌄</span>
+        </div>
+      </div>
+      <div class="meet-body">
+        <!-- TÓPICOS -->
+        <div class="meet-section">
+          <div class="meet-section-title">📌 Tópicos discutidos</div>
+          ${topicsHtml}
+          ${canEdit?`<div class="add-inline-row">
+            <input class="add-inline-input" id="ti-${m.id}" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){addTopic('${m.id}');event.preventDefault();}">
+            <button class="btn btn-outline btn-sm" onclick="addTopic('${m.id}')">+ Adicionar</button>
+          </div>`:''}
+        </div>
+        <!-- RESOLUÇÕES -->
+        <div class="meet-section">
+          <div class="meet-section-title">✅ Resoluções</div>
+          <div class="resolution-box" ${canEdit?`contenteditable="true" onblur="saveResolution('${m.id}',this.innerText)"`:''}>${m.resolutions||'<span style="color:var(--text-3);font-style:italic;">Clique para registrar as resoluções desta reunião…</span>'}</div>
+        </div>
+        <!-- PRÓXIMOS PASSOS -->
+        <div class="meet-section">
+          <div class="meet-section-title">🚀 Próximos passos <span style="font-weight:400;font-style:normal;font-size:11px;color:var(--text-3);">(pré-preenche tópicos da próxima reunião)</span></div>
+          ${nsHtml}
+          ${canEdit?`<div class="add-inline-row">
+            <input class="add-inline-input" id="nsi-${m.id}" placeholder="Próximo passo…" onkeydown="if(event.key==='Enter'){addNextStep('${m.id}');event.preventDefault();}">
+            <select class="form-select" id="nso-${m.id}" style="width:140px;font-size:12px;padding:6px 8px;">${ownerOpts}</select>
+            <button class="btn btn-outline btn-sm" onclick="addNextStep('${m.id}')">+ Adicionar</button>
+          </div>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 // ════════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════════
 loadData();
 renderAll();
+renderMeetings();
 </script>
 </body>
 </html>
