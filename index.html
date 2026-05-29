@@ -3,1461 +3,1090 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ACIVI 360 — Sistema OKR</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>ACIVI 360 — OKR</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --blue:        #1A4BBF;
-  --blue-light:  #E6EEF9;
-  --navy:        #0A1E6E;
-  --teal:        #0F6E56;
-  --teal-light:  #E1F5EE;
-  --coral:       #C0390F;
-  --coral-light: #FAECE7;
-  --gold:        #F5A800;
-  --gold-light:  #FEF4DC;
-  --green:       #3B6D11;
-  --green-light: #EAF3DE;
-  --bg:          #EEF2FA;
-  --surface:     #FFFFFF;
-  --border:      rgba(10,30,110,0.1);
-  --border-md:   rgba(10,30,110,0.18);
-  --text:        #0A1E6E;
-  --text-2:      #3A4F8A;
-  --text-3:      #7A8FC2;
-  --r:           12px;
-  --r-sm:        8px;
+:root{
+  --navy:#0A1E6E;--blue:#1A4BBF;--blue-lt:#E6EEF9;
+  --gold:#F5A800;--gold-lt:#FEF4DC;
+  --teal:#0F6E56;--teal-lt:#E1F5EE;
+  --red:#C0390F;--red-lt:#FAECE7;
+  --bg:#EEF2FA;--white:#fff;
+  --border:rgba(10,30,110,.1);--border2:rgba(10,30,110,.18);
+  --t1:#0A1E6E;--t2:#3A4F8A;--t3:#7A8FC2;
+  --r:12px;--rs:8px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;}
 
-/* ══ LOGIN ══════════════════════════════════════════════════════ */
-.login-screen{position:fixed;top:0;right:0;bottom:0;left:240px;background:linear-gradient(135deg,#0A1E6E 0%,#1A4BBF 60%,#0A1E6E 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
-.login-screen.hidden{display:none;}
-.login-box{background:#fff;border-radius:20px;padding:2.5rem 2rem;width:360px;max-width:95vw;box-shadow:0 32px 80px rgba(10,30,110,.35);text-align:center;}
-.login-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:#0A1E6E;margin-bottom:4px;}
-.login-sub{font-size:12px;color:#7A8FC2;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2rem;}
-.login-title{font-size:15px;font-weight:500;color:#0A1E6E;margin-bottom:1.25rem;}
-.user-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem;}
-.user-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;border:1.5px solid #E6EEF9;background:#F5F8FF;cursor:pointer;transition:all .15s;width:100%;text-align:left;}
-.user-btn:hover,.user-btn.selected{border-color:#1A4BBF;background:#E6EEF9;}
-.u-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;}
-.u-name{font-size:14px;font-weight:600;color:#0A1E6E;}
-.u-role{font-size:11px;color:#7A8FC2;}
-.u-check{font-size:18px;opacity:0;transition:opacity .15s;margin-left:auto;}
-.user-btn.selected .u-check{opacity:1;}
-.pin-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:8px;}
-.pin-input{width:48px;height:54px;border:1.5px solid #E6EEF9;border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:#0A1E6E;background:#F5F8FF;outline:none;transition:border-color .15s;font-family:'DM Sans',sans-serif;-webkit-text-security:disc;}
-.pin-input:focus{border-color:#1A4BBF;background:#fff;}
-.pin-input.error{border-color:#C0390F;background:#FAECE7;}
-.pin-error{font-size:12px;color:#C0390F;min-height:18px;margin-bottom:12px;}
-.login-btn{width:100%;padding:13px;background:#0A1E6E;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .15s;margin-bottom:.5rem;}
-.login-btn:hover{background:#1A4BBF;}
-.login-btn:disabled{background:#7A8FC2;cursor:not-allowed;}
-.login-step{display:none;}
-.login-step.active{display:block;}
-.login-back{font-size:12px;color:#7A8FC2;cursor:pointer;margin-bottom:1rem;display:inline-flex;align-items:center;gap:4px;}
-.login-back:hover{color:#0A1E6E;}
+/* LAYOUT */
+.app{display:flex;min-height:100vh;}
+.sidebar{width:220px;background:var(--navy);display:flex;flex-direction:column;padding:1.5rem 1.25rem;position:fixed;top:0;left:0;bottom:0;z-index:50;}
+.main{margin-left:220px;padding:2rem 2.5rem;flex:1;min-width:0;}
 
-/* ══ SIDEBAR ════════════════════════════════════════════════════ */
-.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--navy);padding:2rem 1.5rem;display:flex;flex-direction:column;z-index:100;}
-.sb-logo{font-family:'Playfair Display',serif;font-weight:800;font-size:20px;color:#fff;letter-spacing:-.5px;margin-bottom:.25rem;}
-.sb-sub{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2.5rem;}
-.sb-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.3);margin-bottom:.75rem;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:.6rem .75rem;border-radius:var(--r-sm);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px;text-decoration:none;}
-.nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:#fff;}
-.sb-bottom{margin-top:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);}
-.phase-pill{background:rgba(255,255,255,.08);border-radius:var(--r-sm);padding:.75rem;}
-.phase-pill-label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;}
-.phase-pill-val{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;}
-.phase-pill-sub{font-size:11px;color:rgba(255,255,255,.45);}
+/* SIDEBAR */
+.sb-logo{font-family:'Playfair Display',serif;font-size:19px;font-weight:800;color:#fff;margin-bottom:2px;}
+.sb-sub{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2rem;}
+.sb-lbl{font-size:10px;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:.55rem .7rem;border-radius:var(--rs);color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;transition:all .15s;}
+.nav-item:hover{background:rgba(255,255,255,.08);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,.13);color:#fff;}
+.sb-bottom{margin-top:auto;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);}
+.sb-phase{background:rgba(255,255,255,.07);border-radius:var(--rs);padding:.6rem .75rem;}
+.sb-phase-lbl{font-size:9px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;}
+.sb-phase-val{font-family:'Playfair Display',serif;font-size:13px;color:#fff;font-weight:700;}
+.sb-phase-sub{font-size:11px;color:rgba(255,255,255,.45);}
 
-/* ══ MAIN ════════════════════════════════════════════════════════ */
-.main{margin-left:240px;padding:2rem 2.5rem;min-height:100vh;}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;gap:1rem;}
-.page-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.2;}
-.page-sub{font-size:13px;color:var(--text-2);margin-top:4px;}
-.hdr-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.user-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border-md);border-radius:20px;padding:5px 12px 5px 6px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);transition:background .15s;}
-.user-pill:hover{background:var(--blue-light);}
-.up-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;}
+/* SECTIONS */
+.sec{display:none;}.sec.active{display:block;}
 
-/* ══ BUTTONS ════════════════════════════════════════════════════ */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;font-family:'DM Sans',sans-serif;}
-.btn-primary{background:var(--navy);color:#fff;}
-.btn-primary:hover{background:var(--blue);}
-.btn-outline{background:var(--surface);color:var(--text);border:1px solid var(--border-md);}
-.btn-outline:hover{background:var(--bg);}
-.btn-danger{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
-.btn-danger:hover{background:#fca5a5;}
-.btn-gold{background:var(--gold);color:var(--navy);}
-.btn-gold:hover{background:#d49200;}
-.btn-sm{padding:5px 10px;font-size:12px;}
+/* HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;}
+.ph-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;line-height:1.2;}
+.ph-sub{font-size:13px;color:var(--t2);margin-top:3px;}
+.ph-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--rs);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-navy{background:var(--navy);color:#fff;}.btn-navy:hover{background:var(--blue);}
+.btn-gold{background:var(--gold);color:var(--navy);}.btn-gold:hover{filter:brightness(.93);}
+.btn-out{background:var(--white);color:var(--t1);border:1px solid var(--border2);}.btn-out:hover{background:var(--bg);}
+.btn-red{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;}
+.btn-sm{padding:4px 10px;font-size:12px;}
 .btn-xs{padding:3px 8px;font-size:11px;}
 
-/* ══ METRICS ════════════════════════════════════════════════════ */
-.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;}
-.metric-card{background:var(--surface);border-radius:var(--r);padding:1.25rem;border:1px solid var(--border);}
-.m-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:8px;}
-.m-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:var(--text);line-height:1;}
-.m-sub{font-size:12px;color:var(--text-2);margin-top:6px;}
+/* USER PILL */
+.upill{display:flex;align-items:center;gap:7px;background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:4px 12px 4px 5px;cursor:pointer;font-size:13px;font-weight:500;}
+.upill:hover{background:var(--blue-lt);}
+.uav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
 
-/* ══ BANNERS ════════════════════════════════════════════════════ */
-.banner{border-radius:var(--r);padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;font-size:13px;}
-.banner-gold{background:var(--gold-light);border:1px solid var(--gold);color:#7A4800;}
-.banner-red{background:var(--coral-light);border:1px solid var(--coral);color:#7A1800;}
+/* METRICS */
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem;}
+.mcard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;}
+.mcard-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--t3);margin-bottom:6px;}
+.mcard-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;line-height:1;}
+.mcard-sub{font-size:12px;color:var(--t2);margin-top:5px;}
 
-/* ══ OKR CARDS ══════════════════════════════════════════════════ */
-.okr-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:1rem;transition:box-shadow .2s;}
-.okr-card:hover{box-shadow:0 4px 24px rgba(10,30,110,.07);}
-.okr-hdr{padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:14px;cursor:pointer;border-bottom:1px solid var(--border);}
-.okr-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+/* BANNER */
+.banner{border-radius:var(--r);padding:.9rem 1.1rem;display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;font-size:13px;}
+.banner-gold{background:var(--gold-lt);border:1px solid var(--gold);color:#7A4800;}
+.banner-red{background:var(--red-lt);border:1px solid var(--red);color:#7A1800;}
+.banner-blue{background:var(--blue-lt);border:1px solid var(--blue);color:var(--navy);}
+
+/* OKR CARDS */
+.okr-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:1rem;overflow:hidden;}
+.okr-hdr{padding:1.1rem 1.4rem;display:flex;align-items:flex-start;gap:12px;cursor:pointer;border-bottom:1px solid transparent;}
+.okr-card.open .okr-hdr{border-bottom-color:var(--border);}
+.okr-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
 .okr-info{flex:1;min-width:0;}
-.okr-label{font-size:11px;font-weight:500;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
-.okr-title-text{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);line-height:1.3;}
-.okr-meta{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap;}
-.okr-pct{font-size:13px;font-weight:600;}
-.okr-bar{flex:1;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;max-width:180px;}
-.okr-bar-fill{height:100%;border-radius:2px;transition:width .4s;}
-.okr-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
-.chevron{font-size:18px;color:var(--text-3);transition:transform .2s;user-select:none;}
+.okr-label{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;}
+.okr-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.3;}
+.okr-meta{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.okr-pct{font-size:13px;font-weight:700;}
+.okr-bar{flex:1;max-width:160px;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;}
+.okr-bar-fill{height:100%;border-radius:2px;transition:width .3s;}
+.okr-acts{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.chevron{font-size:16px;color:var(--t3);transition:transform .2s;user-select:none;display:inline-block;}
 .okr-card.open .chevron{transform:rotate(180deg);}
-
-/* Status badges */
-.status-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
-.s-green{background:#dcfce7;color:#166534;}
-.s-yellow{background:#fef9c3;color:#854d0e;}
-.s-red{background:#fee2e2;color:#991b1b;}
-.s-gray{background:#f1f5f9;color:#475569;}
-
-/* ══ KR LIST ════════════════════════════════════════════════════ */
 .kr-list{display:none;}
 .okr-card.open .kr-list{display:block;}
-.kr-item{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start;}
+
+/* KR ITEMS */
+.kr-item{padding:.85rem 1.4rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:start;}
 .kr-item:last-child{border-bottom:none;}
-.kr-num{font-size:11px;font-weight:700;color:var(--text-3);padding-top:2px;white-space:nowrap;}
-.kr-text{font-size:14px;color:var(--text);line-height:1.5;}
-.kr-text[contenteditable="true"]:focus{outline:1px dashed var(--blue);border-radius:4px;padding:2px 4px;}
-.kr-details{font-size:12px;color:var(--text-3);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;}
-.kr-right{text-align:right;min-width:150px;}
-.kr-target-lbl{font-size:11px;color:var(--text-3);}
-.kr-target-val{font-size:13px;font-weight:600;color:var(--text);margin-top:1px;margin-bottom:6px;}
-.kr-slider-row{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:4px;}
-.kr-pct-lbl{font-size:12px;font-weight:500;color:var(--text-2);min-width:30px;text-align:right;}
-input[type=range]{-webkit-appearance:none;width:90px;height:4px;background:var(--bg);border-radius:2px;outline:none;cursor:pointer;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--navy);cursor:pointer;transition:transform .1s;}
-input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
-.kr-mini-bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-bottom:6px;}
+.kr-id{font-size:11px;font-weight:700;color:var(--t3);padding-top:2px;}
+.kr-text{font-size:13px;line-height:1.5;}
+.kr-text[contenteditable=true]:focus{outline:1px dashed var(--blue);border-radius:3px;padding:1px 3px;}
+.kr-details{font-size:11px;color:var(--t3);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.kr-right{text-align:right;min-width:140px;}
+.kr-tgt-lbl{font-size:10px;color:var(--t3);}
+.kr-tgt-val{font-size:12px;font-weight:600;margin-bottom:5px;}
+.kr-row{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-bottom:3px;}
+.kr-pct{font-size:12px;font-weight:600;color:var(--t2);min-width:28px;text-align:right;}
+input[type=range]{-webkit-appearance:none;width:80px;height:3px;background:var(--bg);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;cursor:pointer;}
+.kr-mini{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-bottom:5px;}
 .kr-mini-fill{height:100%;border-radius:2px;transition:width .3s;}
-.kr-status-row{display:flex;gap:4px;justify-content:flex-end;margin-bottom:4px;}
-.s-btn{padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .1s;background:none;}
-.s-btn.active-green{background:#dcfce7;color:#166534;border-color:#86efac;}
-.s-btn.active-yellow{background:#fef9c3;color:#854d0e;border-color:#fde047;}
-.s-btn.active-red{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
-.s-btn:not([class*="active"]){color:var(--text-3);border-color:var(--border-md);}
-.s-btn:hover{opacity:.8;}
-.owner-chip{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--navy);border-radius:20px;font-size:11px;padding:2px 8px;cursor:pointer;}
-.due-chip{display:inline-flex;align-items:center;gap:4px;background:var(--bg);color:var(--text-2);border-radius:20px;font-size:11px;padding:2px 8px;cursor:pointer;border:1px solid var(--border-md);}
-.due-chip.overdue{background:var(--coral-light);color:var(--coral);border-color:var(--coral);}
-.due-chip.soon{background:var(--gold-light);color:#7A4800;border-color:var(--gold);}
+.sbtn{padding:2px 6px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;border:1.5px solid transparent;background:none;transition:all .1s;}
+.sbtn:not(.sa){color:var(--t3);border-color:var(--border2);}
+.sbtn.sa-g{background:#dcfce7;color:#166534;border-color:#86efac;}
+.sbtn.sa-y{background:#fef9c3;color:#854d0e;border-color:#fde047;}
+.sbtn.sa-r{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
+.chip{display:inline-flex;align-items:center;gap:3px;border-radius:20px;font-size:11px;padding:1px 7px;}
+.chip-blue{background:var(--blue-lt);color:var(--navy);}
+.chip-due{background:var(--bg);color:var(--t2);border:1px solid var(--border2);cursor:pointer;}
+.chip-due.overdue{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+.chip-due.soon{background:var(--gold-lt);color:#7A4800;border-color:var(--gold);}
+.chip-status{font-size:11px;font-weight:600;}
+.s-green{background:#dcfce7;color:#166534;border-radius:20px;padding:1px 7px;}
+.s-yellow{background:#fef9c3;color:#854d0e;border-radius:20px;padding:1px 7px;}
+.s-red{background:#fee2e2;color:#991b1b;border-radius:20px;padding:1px 7px;}
+.s-gray{background:#f1f5f9;color:#475569;border-radius:20px;padding:1px 7px;}
 
-/* ══ CHECK-IN ════════════════════════════════════════════════════ */
-.checkin-section{padding:.75rem 1.5rem;background:#FAFCFF;border-top:1px dashed var(--border-md);}
-.checkin-title{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:.5rem;display:flex;align-items:center;justify-content:space-between;}
-.checkin-entry{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:.6rem .75rem;margin-bottom:.4rem;font-size:12px;color:var(--text-2);}
-.checkin-entry-date{font-size:10px;color:var(--text-3);margin-bottom:2px;}
-.checkin-form{display:flex;gap:6px;margin-top:.5rem;}
-.checkin-input{flex:1;padding:6px 10px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:var(--text);}
-.checkin-input:focus{border-color:var(--blue);}
+/* CHECKIN */
+.ci-section{padding:.7rem 1.4rem;background:#FAFCFF;border-top:1px dashed var(--border2);}
+.ci-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--t3);margin-bottom:.5rem;}
+.ci-entry{background:var(--white);border:1px solid var(--border);border-radius:var(--rs);padding:.5rem .7rem;margin-bottom:.3rem;font-size:12px;color:var(--t2);}
+.ci-entry-date{font-size:10px;color:var(--t3);margin-bottom:1px;}
+.ci-form{display:flex;gap:6px;margin-top:.4rem;}
+.ci-inp{flex:1;padding:6px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;color:var(--t1);}
+.ci-inp:focus{border-color:var(--blue);}
 
-/* ══ ADD KR FORM ════════════════════════════════════════════════ */
-.add-kr-form{padding:1rem 1.5rem;background:#FAFCFF;border-top:1px dashed var(--border-md);display:none;}
-.add-kr-form.visible{display:block;}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.form-group{display:flex;flex-direction:column;gap:4px;}
-.form-label{font-size:11px;color:var(--text-2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
-.form-input{padding:8px 12px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);outline:none;transition:border-color .15s;}
-.form-input:focus{border-color:var(--blue);}
-.form-select{padding:8px 12px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);outline:none;}
-.form-actions{display:flex;gap:8px;justify-content:flex-end;}
+/* ADD KR FORM */
+.add-kr{padding:.9rem 1.4rem;background:#FAFCFF;border-top:1px dashed var(--border2);display:none;}
+.add-kr.open{display:block;}
+.fg{display:flex;flex-direction:column;gap:3px;margin-bottom:8px;}
+.fg-lbl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.05em;}
+.fi{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--t1);outline:none;background:var(--white);}
+.fi:focus{border-color:var(--blue);}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 
-/* ══ MODAL ══════════════════════════════════════════════════════ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;}
-.modal-overlay.visible{display:flex;}
-.modal{background:var(--surface);border-radius:var(--r);padding:2rem;width:520px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
-.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1.5rem;}
-.modal-form-group{margin-bottom:1rem;}
-.color-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
-.color-option{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s;}
-.color-option.selected{border-color:var(--text);}
-.emoji-picker{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
-.emoji-option{width:36px;height:36px;border-radius:var(--r-sm);cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .1s;}
-.emoji-option:hover,.emoji-option.selected{background:var(--bg);border-color:var(--blue);}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:center;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--white);border-radius:var(--r);padding:1.75rem;width:500px;max-width:95vw;max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1.25rem;}
+.cpick{display:flex;gap:7px;flex-wrap:wrap;margin-top:5px;}
+.copt{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;}
+.copt.sel{border-color:var(--t1);}
+.epick{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px;}
+.eopt{width:34px;height:34px;border-radius:var(--rs);cursor:pointer;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;}
+.eopt:hover,.eopt.sel{background:var(--bg);border-color:var(--blue);}
 
-
-/* ══ MEETINGS ════════════════════════════════════════════════════ */
-.meet-list{display:flex;flex-direction:column;gap:12px;}
-.meet-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow .2s;}
-.meet-card:hover{box-shadow:0 4px 24px rgba(10,30,110,.07);}
-.meet-card-hdr{padding:1.1rem 1.4rem;display:flex;align-items:flex-start;gap:14px;cursor:pointer;}
-.meet-date-badge{background:var(--navy);color:#fff;border-radius:10px;padding:.5rem .75rem;text-align:center;flex-shrink:0;min-width:52px;}
-.meet-date-day{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;line-height:1;}
-.meet-date-mon{font-size:10px;text-transform:uppercase;letter-spacing:.08em;opacity:.7;margin-top:2px;}
-.meet-hdr-info{flex:1;min-width:0;}
-.meet-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px;}
-.meet-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.meet-tag{display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--navy);border-radius:20px;font-size:11px;font-weight:600;padding:2px 10px;}
-.meet-tag.pending{background:var(--gold-light);color:#7A4800;}
-.meet-tag.done{background:var(--green-light);color:var(--green);}
-.meet-actions{display:flex;gap:6px;align-items:center;flex-shrink:0;}
-.meet-body{display:none;border-top:1px solid var(--border);}
+/* MEETINGS */
+.meet-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:1rem;overflow:hidden;}
+.meet-hdr{padding:1rem 1.4rem;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+.meet-card.open .meet-hdr{border-bottom:1px solid var(--border);}
+.meet-badge{background:var(--navy);color:#fff;border-radius:9px;padding:.45rem .65rem;text-align:center;flex-shrink:0;min-width:48px;}
+.meet-badge-day{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;line-height:1;}
+.meet-badge-mon{font-size:9px;text-transform:uppercase;letter-spacing:.07em;opacity:.65;margin-top:1px;}
+.meet-info{flex:1;}
+.meet-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:4px;}
+.meet-tags{display:flex;gap:7px;flex-wrap:wrap;}
+.mtag{display:inline-flex;align-items:center;gap:3px;background:var(--blue-lt);color:var(--navy);border-radius:20px;font-size:11px;font-weight:500;padding:1px 9px;}
+.mtag-gold{background:var(--gold-lt);color:#7A4800;}
+.mtag-green{background:var(--teal-lt);color:var(--teal);}
+.meet-body{display:none;}
 .meet-card.open .meet-body{display:block;}
 .meet-card.open .chevron{transform:rotate(180deg);}
-.meet-section{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);}
-.meet-section:last-child{border-bottom:none;}
-.meet-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:.75rem;display:flex;align-items:center;gap:6px;}
-.topic-row{display:flex;align-items:flex-start;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px;}
-.topic-row:last-child{border-bottom:none;}
-.topic-num{font-size:11px;font-weight:700;color:var(--text-3);min-width:22px;padding-top:2px;}
-.topic-text{flex:1;color:var(--text);}
-.topic-del{font-size:14px;cursor:pointer;color:var(--text-3);opacity:0;transition:opacity .15s;padding:0 4px;}
-.topic-row:hover .topic-del{opacity:1;}
-.nextstep-row{display:flex;align-items:flex-start;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:13px;}
-.nextstep-row:last-child{border-bottom:none;}
-.ns-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--border-md);cursor:pointer;flex-shrink:0;margin-top:3px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;}
-.ns-check.done{background:var(--teal);border-color:var(--teal);color:#fff;}
-.ns-text{flex:1;color:var(--text);}
-.ns-text.done{text-decoration:line-through;color:var(--text-3);}
-.ns-owner{font-size:11px;color:var(--text-3);white-space:nowrap;}
-.ns-del{font-size:14px;cursor:pointer;color:var(--text-3);opacity:0;transition:opacity .15s;padding:0 4px;}
-.nextstep-row:hover .ns-del{opacity:1;}
-.add-inline-row{display:flex;gap:8px;margin-top:.75rem;}
-.add-inline-input{flex:1;padding:7px 11px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;}
-.add-inline-input:focus{border-color:var(--blue);}
-.resolution-box{background:var(--blue-light);border-radius:var(--r-sm);padding:.75rem 1rem;font-size:13px;color:var(--navy);line-height:1.6;white-space:pre-wrap;min-height:40px;}
-.resolution-box[contenteditable="true"]:focus{outline:1px dashed var(--blue);}
-.new-meet-form{background:var(--surface);border:1.5px dashed var(--border-md);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem;display:none;}
-.new-meet-form.visible{display:block;}
-.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.pending-banner{background:var(--gold-light);border:1px solid var(--gold);border-radius:var(--r-sm);padding:.75rem 1rem;font-size:13px;color:#7A4800;margin-bottom:1rem;}
-.pending-banner strong{font-weight:700;}
+.msec{padding:1rem 1.4rem;border-bottom:1px solid var(--border);}
+.msec:last-child{border-bottom:none;}
+.msec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:.6rem;}
+.trow{display:flex;align-items:flex-start;gap:8px;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+.trow:last-child{border-bottom:none;}
+.trow-n{font-size:11px;font-weight:700;color:var(--t3);min-width:20px;padding-top:1px;}
+.trow-del{font-size:13px;cursor:pointer;color:var(--t3);opacity:0;padding:0 3px;transition:opacity .15s;}
+.trow:hover .trow-del{opacity:1;}
+.nsrow{display:flex;align-items:flex-start;gap:8px;padding:.35rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+.nsrow:last-child{border-bottom:none;}
+.nscheck{width:15px;height:15px;border-radius:4px;border:2px solid var(--border2);cursor:pointer;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .15s;}
+.nscheck.done{background:var(--teal);border-color:var(--teal);color:#fff;}
+.nstext{flex:1;}.nstext.done{text-decoration:line-through;color:var(--t3);}
+.nsown{font-size:11px;color:var(--t3);white-space:nowrap;}
+.nsdel{font-size:13px;cursor:pointer;color:var(--t3);opacity:0;padding:0 3px;}
+.nsrow:hover .nsdel{opacity:1;}
+.add-row{display:flex;gap:7px;margin-top:.6rem;}
+.add-inp{flex:1;padding:6px 10px;border:1px solid var(--border2);border-radius:var(--rs);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--t1);outline:none;}
+.add-inp:focus{border-color:var(--blue);}
+.resbox{background:var(--blue-lt);border-radius:var(--rs);padding:.7rem .9rem;font-size:13px;color:var(--navy);line-height:1.6;min-height:38px;white-space:pre-wrap;}
+.resbox[contenteditable=true]:focus{outline:1px dashed var(--blue);}
+.new-meet{background:var(--white);border:1.5px dashed var(--border2);border-radius:var(--r);padding:1.4rem;margin-bottom:1.25rem;display:none;}
+.new-meet.open{display:block;}
+.pending-note{background:var(--gold-lt);border:1px solid var(--gold);border-radius:var(--rs);padding:.65rem .9rem;font-size:13px;color:#7A4800;margin-bottom:.9rem;}
 
-/* ══ SECTIONS ════════════════════════════════════════════════════ */
-.section{display:none;}
-.section.active{display:block;}
+/* HISTORY */
+.hist-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;margin-bottom:1.25rem;}
+.hist-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:.75rem;}
+canvas#hchart{width:100%!important;height:140px!important;}
 
-/* ══ TIMELINE (Roadmap) ══════════════════════════════════════════ */
-.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border-md);border-radius:var(--r);overflow:hidden;margin-bottom:2rem;}
-.tl-phase{background:var(--surface);padding:1.25rem;}
-.tl-phase.current{background:var(--gold-light);}
-.tl-num{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-3);margin-bottom:4px;}
-.tl-name{font-family:'Playfair Display',serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:8px;}
-.tl-phase.current .tl-name{color:var(--navy);}
-.tl-invest{font-size:12px;color:var(--text-2);margin-bottom:4px;}
-.tl-gain{display:inline-block;background:var(--bg);border-radius:4px;padding:2px 6px;margin:2px 2px 0 0;color:var(--text-2);font-size:11px;}
-.tl-phase.current .tl-gain{background:var(--gold-light);color:#7A4800;}
-.cur-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold);color:var(--navy);border-radius:20px;font-size:10px;padding:2px 8px;margin-bottom:8px;font-weight:700;}
+/* ALERTS */
+.alert{display:flex;align-items:center;gap:8px;border-radius:var(--rs);padding:.6rem .9rem;margin-bottom:.4rem;font-size:13px;}
+.alert-red{background:var(--red-lt);border:1px solid var(--red);color:#7A1800;}
+.alert-warn{background:var(--gold-lt);border:1px solid var(--gold);color:#7A4800;}
 
-/* ══ PRESENTATION MODE ══════════════════════════════════════════ */
-.pres-mode{display:none;position:fixed;inset:0;background:var(--navy);z-index:500;padding:3rem;overflow:auto;}
-.pres-mode.active{display:block;}
-.pres-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem;}
-.pres-logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:#fff;}
-.pres-quarter{font-size:16px;color:rgba(255,255,255,.6);margin-top:4px;}
-.pres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-.pres-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:1.5rem;}
-.pres-obj-label{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;}
-.pres-obj-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:1rem;line-height:1.3;}
-.pres-pct{font-family:'Playfair Display',serif;font-size:40px;font-weight:800;margin-bottom:.5rem;}
-.pres-bar{height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden;margin-bottom:1rem;}
-.pres-bar-fill{height:100%;border-radius:3px;}
-.pres-kr-row{font-size:12px;color:rgba(255,255,255,.7);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;gap:8px;}
-.pres-kr-row:last-child{border-bottom:none;}
-.pres-overall{text-align:center;margin-bottom:3rem;}
-.pres-overall-num{font-family:'Playfair Display',serif;font-size:72px;font-weight:800;color:var(--gold);}
-.pres-overall-lbl{font-size:16px;color:rgba(255,255,255,.6);}
+/* PRES */
+.pres{display:none;position:fixed;inset:0;background:var(--navy);z-index:500;padding:2.5rem;overflow:auto;}
+.pres.open{display:block;}
+.pres-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5rem;}
+.pres-logo{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;color:#fff;}
+.pres-sub{font-size:14px;color:rgba(255,255,255,.55);margin-top:3px;}
+.pres-overall{text-align:center;margin-bottom:2rem;}
+.pres-num{font-family:'Playfair Display',serif;font-size:64px;font-weight:800;color:var(--gold);}
+.pres-lbl{font-size:14px;color:rgba(255,255,255,.55);}
+.pres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.pcard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:1.25rem;}
+.pcard-lbl{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.09em;margin-bottom:6px;}
+.pcard-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:.75rem;line-height:1.3;}
+.pcard-pct{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;margin-bottom:.4rem;}
+.pcard-bar{height:5px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;margin-bottom:.75rem;}
+.pcard-bar-fill{height:100%;border-radius:3px;}
+.pkr{font-size:11px;color:rgba(255,255,255,.65);padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;gap:6px;}
+.pkr:last-child{border-bottom:none;}
 
-/* ══ HISTORY CHART ══════════════════════════════════════════════ */
-.history-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem;}
-.history-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:1rem;}
-.chart-canvas-wrap{position:relative;height:160px;}
-canvas#histChart{width:100%!important;height:160px!important;}
-.chart-empty{text-align:center;padding:2rem;color:var(--text-3);font-size:13px;}
+/* ROADMAP */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border2);border-radius:var(--r);overflow:hidden;margin-bottom:1.5rem;}
+.tlp{background:var(--white);padding:1.1rem;}
+.tlp.cur{background:var(--gold-lt);}
+.tlp-n{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--t3);margin-bottom:3px;}
+.tlp-name{font-family:'Playfair Display',serif;font-weight:700;font-size:13px;margin-bottom:6px;}
+.tlp.cur .tlp-name{color:var(--navy);}
+.tlp-inv{font-size:11px;color:var(--t2);margin-bottom:4px;}
+.tlp-gain{display:inline-block;background:var(--bg);border-radius:3px;padding:1px 5px;margin:1px 1px 0 0;font-size:10px;color:var(--t2);}
+.tlp.cur .tlp-gain{background:var(--gold-lt);color:#7A4800;}
+.cur-dot{display:inline-flex;align-items:center;gap:3px;background:var(--gold);color:var(--navy);border-radius:20px;font-size:9px;padding:1px 7px;margin-bottom:6px;font-weight:700;}
 
-/* ══ DEADLINE ALERTS ════════════════════════════════════════════ */
-.alert-section{margin-bottom:1.5rem;}
-.alert-item{display:flex;align-items:center;gap:10px;background:var(--coral-light);border:1px solid var(--coral);border-radius:var(--r-sm);padding:.75rem 1rem;margin-bottom:.5rem;font-size:13px;color:#7A1800;}
-.alert-item.warn{background:var(--gold-light);border-color:var(--gold);color:#7A4800;}
+/* SETTINGS */
+.scard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:.75rem;}
+.scard-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:.75rem;}
+.srow{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:13px;}
+.srow:last-child{border-bottom:none;}
+.srow-k{color:var(--t2);}
 
-/* ══ SETTINGS ════════════════════════════════════════════════════ */
-.settings-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:1.5rem;margin-bottom:1rem;}
-.settings-title{font-family:'Playfair Display',serif;font-weight:700;font-size:16px;margin-bottom:1rem;}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--border);}
-.settings-row:last-child{border-bottom:none;}
-.settings-key{font-size:13px;color:var(--text-2);}
-.settings-val{font-size:13px;font-weight:500;}
+/* LOGIN */
+.login{position:fixed;inset:0;background:linear-gradient(135deg,#0A1E6E,#1A4BBF 60%,#0A1E6E);display:flex;align-items:center;justify-content:center;z-index:999;}
+.login.hidden{display:none;}
+.lbox{background:#fff;border-radius:18px;padding:2.25rem 1.75rem;width:340px;max-width:95vw;text-align:center;}
+.l-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.l-sub{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.75rem;}
+.l-title{font-size:14px;font-weight:500;color:var(--navy);margin-bottom:1rem;}
+.lstep{display:none;}.lstep.active{display:block;}
+.ugrid{display:flex;flex-direction:column;gap:8px;margin-bottom:1.25rem;}
+.ubtn{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;border:1.5px solid #E6EEF9;background:#F5F8FF;cursor:pointer;transition:all .15s;width:100%;text-align:left;}
+.ubtn:hover,.ubtn.sel{border-color:var(--blue);background:var(--blue-lt);}
+.uav-sm{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
+.uname{font-size:13px;font-weight:600;color:var(--navy);}
+.urole{font-size:11px;color:var(--t3);}
+.uchk{font-size:16px;opacity:0;margin-left:auto;}.ubtn.sel .uchk{opacity:1;}
+.pins{display:flex;gap:7px;justify-content:center;margin-bottom:6px;}
+.pin{width:44px;height:50px;border:1.5px solid #E6EEF9;border-radius:9px;text-align:center;font-size:20px;font-weight:700;color:var(--navy);background:#F5F8FF;outline:none;font-family:'DM Sans',sans-serif;-webkit-text-security:disc;}
+.pin:focus{border-color:var(--blue);background:#fff;}
+.pin.err{border-color:var(--red);background:var(--red-lt);}
+.perr{font-size:12px;color:var(--red);min-height:16px;margin-bottom:10px;}
+.lbtn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:.4rem;}
+.lbtn:hover{background:var(--blue);}
+.lbtn:disabled{background:var(--t3);cursor:not-allowed;}
+.lback{font-size:12px;color:var(--t3);cursor:pointer;margin-bottom:.75rem;display:inline-flex;align-items:center;gap:3px;}
+.lback:hover{color:var(--navy);}
 
-/* ══ TOAST ══════════════════════════════════════════════════════ */
-.toast{position:fixed;bottom:2rem;right:2rem;background:var(--navy);color:#fff;padding:12px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:500;z-index:999;transform:translateY(20px);opacity:0;transition:all .3s;pointer-events:none;}
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--navy);color:#fff;padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:500;z-index:9999;transform:translateY(16px);opacity:0;transition:all .25s;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
 
-/* ══ RESPONSIVE ══════════════════════════════════════════════════ */
-@media(max-width:900px){.sidebar{width:200px;}.main{margin-left:200px;padding:1.5rem;}.metrics-grid{grid-template-columns:repeat(2,1fr);}.pres-grid{grid-template-columns:1fr 1fr;}}
-@media(max-width:680px){.sidebar{display:none;}.main{margin-left:0;}.timeline{grid-template-columns:1fr 1fr;}.pres-mode{padding:1.5rem;}.pres-grid{grid-template-columns:1fr;}.login-screen{left:0;}}
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px;}
+/* RESPONSIVE */
+@media(max-width:860px){.mgrid{grid-template-columns:1fr 1fr;}.pres-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.sidebar{width:180px;}.main{margin-left:180px;padding:1.25rem;}.tl{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- ══ SIDEBAR ══════════════════════════════════════════════════ -->
+<!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sb-logo">ACIVI 360</div>
   <div class="sb-sub">Sistema OKR</div>
-  <div class="sb-label">Navegação</div>
-  <a class="nav-item active" onclick="showSection('dashboard',this)">📊 Dashboard</a>
-  <a class="nav-item" onclick="showSection('okrs',this)">🎯 Objetivos & KRs</a>
-  <a class="nav-item" onclick="showSection('meetings',this)">📋 Reuniões</a>
-  <a class="nav-item" onclick="showSection('roadmap',this)">🗺️ Roadmap</a>
-  <a class="nav-item" onclick="showSection('settings',this)">⚙️ Configurações</a>
+  <div class="sb-lbl">Menu</div>
+  <button class="nav-item active" onclick="nav('dashboard',this)">📊 Dashboard</button>
+  <button class="nav-item" onclick="nav('okrs',this)">🎯 Objetivos & KRs</button>
+  <button class="nav-item" onclick="nav('meetings',this)">📋 Reuniões</button>
+  <button class="nav-item" onclick="nav('roadmap',this)">🗺️ Roadmap</button>
+  <button class="nav-item" onclick="nav('settings',this)">⚙️ Configurações</button>
   <div class="sb-bottom">
-    <div class="phase-pill">
-      <div class="phase-pill-label">Fase atual</div>
-      <div class="phase-pill-val">Fase 1 · Q2</div>
-      <div class="phase-pill-sub">Prospecção · 2026</div>
+    <div class="sb-phase">
+      <div class="sb-phase-lbl">Fase atual</div>
+      <div class="sb-phase-val">Fase 1 · Q2</div>
+      <div class="sb-phase-sub">Prospecção · 2026</div>
     </div>
   </div>
 </nav>
 
-<!-- ══ MAIN ══════════════════════════════════════════════════════ -->
-<main class="main">
+<!-- MAIN -->
+<div class="main">
 
-  <!-- DASHBOARD -->
-  <div id="sec-dashboard" class="section active">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Dashboard OKR</div>
-        <div class="page-sub">Fase 1 — Prospecção · Q2 2026</div>
-      </div>
-      <div class="hdr-actions">
-        <div class="user-pill" onclick="doLogout()" id="user-pill" title="Clique para sair">
-          <div class="up-av" id="pill-av" style="background:var(--blue);">—</div>
-          <span id="pill-name">—</span>
-        </div>
-        <button class="btn btn-gold" onclick="openPresMode()">📽️ Apresentar</button>
-        <button class="btn btn-outline" onclick="exportPDF()">📄 PDF</button>
-        <button class="btn btn-outline" onclick="exportData()">📤 Exportar</button>
-        <button class="btn btn-primary" onclick="saveAll()">💾 Salvar</button>
-      </div>
+<!-- ── DASHBOARD ─────────────────────────────────── -->
+<div id="sec-dashboard" class="sec active">
+  <div class="ph">
+    <div><div class="ph-title">Dashboard OKR</div><div class="ph-sub">Fase 1 — Prospecção · Q2 2026</div></div>
+    <div class="ph-actions">
+      <div class="upill" onclick="doLogout()" id="upill" title="Sair"><div class="uav" id="uav" style="background:var(--blue);">?</div><span id="uname">—</span></div>
+      <button class="btn btn-gold" onclick="openPres()">📽 Apresentar</button>
+      <button class="btn btn-out" onclick="exportPDF()">📄 PDF</button>
+      <button class="btn btn-out" onclick="exportJSON()">📤 Export</button>
+      <button class="btn btn-navy" onclick="saveAll()">💾 Salvar</button>
     </div>
+  </div>
+  <div class="banner banner-gold"><span style="font-size:18px;">✅</span><div><strong>Investimento Q2 2026: R$ 0</strong> — Prospecção não requer aporte. Ganho esperado: Benefícios + Associados.</div></div>
+  <div id="alerts"></div>
+  <div class="mgrid">
+    <div class="mcard"><div class="mcard-lbl">Objetivos</div><div class="mcard-val" id="m-obj">3</div><div class="mcard-sub">no trimestre</div></div>
+    <div class="mcard"><div class="mcard-lbl">Key Results</div><div class="mcard-val" id="m-kr">11</div><div class="mcard-sub">métricas</div></div>
+    <div class="mcard"><div class="mcard-lbl">Progresso</div><div class="mcard-val" id="m-prog" style="color:var(--blue)">0%</div><div class="mcard-sub">média geral</div></div>
+    <div class="mcard"><div class="mcard-lbl">Em andamento</div><div class="mcard-val" id="m-act">0</div><div class="mcard-sub">KRs &gt; 0%</div></div>
+  </div>
+  <div class="hist-wrap">
+    <div class="hist-title">📈 Evolução — Check-ins Quinzenais</div>
+    <canvas id="hchart" height="140"></canvas>
+    <div id="hchart-empty" style="text-align:center;padding:1.5rem;font-size:13px;color:var(--t3);">Registre o primeiro check-in em Configurações para ver o gráfico.</div>
+  </div>
+  <div id="okr-dash"></div>
+</div>
 
-    <div class="banner banner-gold">
-      <span style="font-size:20px;">✅</span>
-      <div><strong>Investimento Q2 2026: R$ 0</strong> — Fase de prospecção não requer aporte financeiro. Ganho esperado: Benefícios + Associados.</div>
-    </div>
+<!-- ── OBJETIVOS ──────────────────────────────────── -->
+<div id="sec-okrs" class="sec">
+  <div class="ph">
+    <div><div class="ph-title">Objetivos & KRs</div><div class="ph-sub">Gerencie e edite</div></div>
+    <div class="ph-actions"><button class="btn btn-navy edit-only" onclick="openAddObj()">+ Objetivo</button></div>
+  </div>
+  <div id="okr-manage"></div>
+</div>
 
-    <div id="alert-section" class="alert-section"></div>
-
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="m-label">Objetivos</div>
-        <div class="m-val" id="m-objectives">3</div>
-        <div class="m-sub">neste trimestre</div>
-      </div>
-      <div class="metric-card">
-        <div class="m-label">Key Results</div>
-        <div class="m-val" id="m-krs">11</div>
-        <div class="m-sub">métricas mensuráveis</div>
-      </div>
-      <div class="metric-card">
-        <div class="m-label">Progresso geral</div>
-        <div class="m-val" id="m-progress" style="color:var(--blue);">0%</div>
-        <div class="m-sub">média de todos KRs</div>
-      </div>
-      <div class="metric-card">
-        <div class="m-label">KRs em andamento</div>
-        <div class="m-val" id="m-active">0</div>
-        <div class="m-sub">com progresso &gt; 0%</div>
-      </div>
-    </div>
-
-    <div class="history-wrap">
-      <div class="history-title">📈 Evolução do Progresso — Check-ins Quinzenais</div>
-      <div class="chart-canvas-wrap" id="chart-wrap">
-        <div class="chart-empty" id="chart-empty">Nenhum check-in registrado ainda. O gráfico aparecerá após o primeiro check-in quinzenal.</div>
-        <canvas id="histChart" style="display:none;"></canvas>
-      </div>
-    </div>
-
-    <div id="okr-list-dash"></div>
+<!-- ── REUNIÕES ───────────────────────────────────── -->
+<div id="sec-meetings" class="sec">
+  <div class="ph">
+    <div><div class="ph-title">Reuniões</div><div class="ph-sub">Atas, tópicos, resoluções e próximos passos</div></div>
+    <div class="ph-actions"><button class="btn btn-navy edit-only" onclick="openNewMeet()">+ Nova Reunião</button></div>
   </div>
 
-  <!-- OBJETIVOS -->
-  <div id="sec-okrs" class="section">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Objetivos & Key Results</div>
-        <div class="page-sub">Gerencie, edite e acompanhe cada KR</div>
-      </div>
-      <div class="hdr-actions">
-        <button class="btn btn-primary edit-only" onclick="openAddObjective()">+ Novo Objetivo</button>
+  <div class="new-meet" id="new-meet">
+    <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:1rem;">📋 Nova Reunião</div>
+    <div id="pending-note"></div>
+    <div class="fgrid" style="margin-bottom:10px;">
+      <div class="fg"><div class="fg-lbl">Título</div><input class="fi" id="nm-title" placeholder="Ex: Reunião de Prospecção"></div>
+      <div class="fg"><div class="fg-lbl">Data</div><input type="date" class="fi" id="nm-date"></div>
+      <div class="fg"><div class="fg-lbl">Local / Plataforma</div><input class="fi" id="nm-local" placeholder="Ex: Google Meet"></div>
+      <div class="fg"><div class="fg-lbl">Participantes</div><input class="fi" id="nm-part" placeholder="Ex: Aliny, Paulo"></div>
+    </div>
+    <div class="fg" style="margin-bottom:8px;">
+      <div class="fg-lbl">Tópicos da pauta</div>
+      <div id="nm-topics"></div>
+      <div class="add-row" style="margin-top:6px;">
+        <input class="add-inp" id="nm-t-inp" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){nmAddTopic();event.preventDefault();}">
+        <button class="btn btn-out btn-sm" onclick="nmAddTopic()">+ Add</button>
       </div>
     </div>
-    <div id="okr-list-manage"></div>
-  </div>
-
-  <!-- ROADMAP -->
-  <div id="sec-roadmap" class="section">
-    <div class="page-header">
-      <div><div class="page-title">Roadmap de Fases</div><div class="page-sub">Visão geral das 4 fases do projeto</div></div>
-    </div>
-    <div class="timeline">
-      <div class="tl-phase current">
-        <div class="cur-badge">● Atual</div>
-        <div class="tl-num">Fase 1</div>
-        <div class="tl-name">Prospecção</div>
-        <div class="tl-invest">💰 R$ 0</div>
-        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div></div>
-      </div>
-      <div class="tl-phase">
-        <div class="tl-num">Fase 2</div>
-        <div class="tl-name">Crescimento</div>
-        <div class="tl-invest">💰 R$ 0</div>
-        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Seguidores</div></div>
-      </div>
-      <div class="tl-phase">
-        <div class="tl-num">Fase 3</div>
-        <div class="tl-name">Escala</div>
-        <div class="tl-invest">💰 20% novo fat.</div>
-        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Otimização</div></div>
-      </div>
-      <div class="tl-phase">
-        <div class="tl-num">Fase 4</div>
-        <div class="tl-name">Consolidação</div>
-        <div class="tl-invest">💰 20% novo fat.</div>
-        <div><div class="tl-gain">+ Benefícios</div><div class="tl-gain">+ Associados</div><div class="tl-gain">+ Visibilidade</div></div>
-      </div>
-    </div>
-    <div style="background:var(--surface);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;">
-      <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);font-family:'Playfair Display',serif;font-weight:700;font-size:16px;">Detalhamento por fase</div>
-      <div style="padding:1.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
-        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--blue);">Fase 1 — Prospecção</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Mapear necessidades dos colaboradores (Link de pesquisa)</li><li>• Proposta para atrair empresas parceiras</li><li>• Gerar benefícios aos colaboradores</li><li>• Construção da narrativa e estratégias para as mídias</li></ul></div>
-        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--teal);">Fase 2 — Crescimento</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Divulgar o projeto aos colaboradores</li><li>• Ativação de conteúdos ACIVI 360 no TikTok</li><li>• Crescimento Instagram (Meta: 5 mil seguidores)</li><li>• Meta de novos Associados: 500</li><li>• Criação de novo produto (Venda de espaço digital)</li></ul></div>
-        <div><div style="font-weight:600;margin-bottom:.75rem;color:var(--coral);">Fase 3 — Escala</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Sistema de gestão</li><li>• Contratação de pessoas</li><li>• Construção da vitrine no site e mídias</li><li>• Relatório com resultados (Mídia kit)</li><li>• Tráfego pago e atendimento com IA</li></ul></div>
-        <div><div style="font-weight:600;margin-bottom:.75rem;color:#7A4800;">Fase 4 — Consolidação</div><ul style="list-style:none;font-size:13px;color:var(--text-2);line-height:2;"><li>• Atendimento estruturado e automatizado</li><li>• Viabilizar aumento da mensalidade</li><li>• Associativismo essencial para colaboradores</li><li>• Capacitar outras entidades (case Federasul)</li></ul></div>
-      </div>
+    <div style="display:flex;gap:7px;justify-content:flex-end;margin-top:.75rem;">
+      <button class="btn btn-out" onclick="closeNewMeet()">Cancelar</button>
+      <button class="btn btn-navy" onclick="saveMeeting()">Criar Reunião</button>
     </div>
   </div>
 
-  <!-- SETTINGS -->
-  <div id="sec-settings" class="section">
-    <div class="page-header"><div><div class="page-title">Configurações</div><div class="page-sub">Dados e preferências do sistema</div></div></div>
-    <div class="settings-card">
-      <div class="settings-title">Sobre o projeto</div>
-      <div class="settings-row"><span class="settings-key">Projeto</span><span class="settings-val">ACIVI 360</span></div>
-      <div class="settings-row"><span class="settings-key">Fase atual</span><span class="settings-val">Fase 1 — Prospecção</span></div>
-      <div class="settings-row"><span class="settings-key">Ciclo</span><span class="settings-val">Trimestral · Q2 2026</span></div>
-      <div class="settings-row"><span class="settings-key">Check-ins</span><span class="settings-val">Quinzenais</span></div>
-      <div class="settings-row"><span class="settings-key">Metodologia</span><span class="settings-val">OKR (Objectives & Key Results)</span></div>
-    </div>
-    <div class="settings-card">
-      <div class="settings-title">Check-in Quinzenal Global</div>
-      <p style="font-size:13px;color:var(--text-2);margin-bottom:1rem;">Registra um snapshot do progresso atual (% geral) para o gráfico de evolução.</p>
-      <button class="btn btn-primary edit-only" onclick="registerCheckin()">📌 Registrar Check-in Agora</button>
-    </div>
-    <div class="settings-card">
-      <div class="settings-title">Dados</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-outline" onclick="exportData()">📤 Exportar JSON</button>
-        <button class="btn btn-outline" onclick="importData()">📥 Importar JSON</button>
-        <button class="btn btn-outline" onclick="exportPDF()">📄 Exportar PDF</button>
-        <button class="btn btn-danger edit-only" onclick="resetData()">🗑️ Resetar dados</button>
-      </div>
-      <div style="margin-top:1rem;font-size:12px;color:var(--text-3);">Dados salvos automaticamente no navegador (localStorage). Exporte JSON para fazer backup.</div>
+  <div id="meet-list"></div>
+  <div id="meet-empty" style="display:none;text-align:center;padding:3rem;color:var(--t3);font-size:14px;">Nenhuma reunião ainda.<br>Clique em <strong>+ Nova Reunião</strong> para começar.</div>
+</div>
+
+<!-- ── ROADMAP ────────────────────────────────────── -->
+<div id="sec-roadmap" class="sec">
+  <div class="ph"><div><div class="ph-title">Roadmap</div><div class="ph-sub">4 fases do projeto ACIVI 360</div></div></div>
+  <div class="tl">
+    <div class="tlp cur"><div class="cur-dot">● Atual</div><div class="tlp-n">Fase 1</div><div class="tlp-name">Prospecção</div><div class="tlp-inv">💰 R$ 0</div><div><span class="tlp-gain">+ Benefícios</span><span class="tlp-gain">+ Associados</span></div></div>
+    <div class="tlp"><div class="tlp-n">Fase 2</div><div class="tlp-name">Crescimento</div><div class="tlp-inv">💰 R$ 0</div><div><span class="tlp-gain">+ Benefícios</span><span class="tlp-gain">+ Seguidores</span><span class="tlp-gain">+ Associados</span></div></div>
+    <div class="tlp"><div class="tlp-n">Fase 3</div><div class="tlp-name">Escala</div><div class="tlp-inv">💰 20% fat.</div><div><span class="tlp-gain">+ Gestão</span><span class="tlp-gain">+ Otimização</span><span class="tlp-gain">+ Mídia kit</span></div></div>
+    <div class="tlp"><div class="tlp-n">Fase 4</div><div class="tlp-name">Consolidação</div><div class="tlp-inv">💰 20% fat.</div><div><span class="tlp-gain">+ Automação</span><span class="tlp-gain">+ Visibilidade</span><span class="tlp-gain">+ Case</span></div></div>
+  </div>
+  <div class="scard">
+    <div class="scard-title" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:1rem;">Detalhes por fase</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+      <div><div style="font-weight:600;color:var(--blue);margin-bottom:.5rem;">Fase 1 — Prospecção</div><ul style="list-style:none;font-size:12px;color:var(--t2);line-height:2;"><li>• Mapear necessidades (pesquisa)</li><li>• Proposta para empresas parceiras</li><li>• Gerar benefícios aos colaboradores</li><li>• Narrativa e estratégia de mídia</li></ul></div>
+      <div><div style="font-weight:600;color:var(--teal);margin-bottom:.5rem;">Fase 2 — Crescimento</div><ul style="list-style:none;font-size:12px;color:var(--t2);line-height:2;"><li>• Divulgar o projeto</li><li>• TikTok + Instagram (meta: 5k)</li><li>• Meta: 500 novos associados</li><li>• Venda de espaço digital</li></ul></div>
+      <div><div style="font-weight:600;color:var(--red);margin-bottom:.5rem;">Fase 3 — Escala</div><ul style="list-style:none;font-size:12px;color:var(--t2);line-height:2;"><li>• Sistema de gestão</li><li>• Contratações</li><li>• Mídia kit</li><li>• Tráfego pago + IA</li></ul></div>
+      <div><div style="font-weight:600;color:#7A4800;margin-bottom:.5rem;">Fase 4 — Consolidação</div><ul style="list-style:none;font-size:12px;color:var(--t2);line-height:2;"><li>• Atendimento automatizado</li><li>• Aumento de mensalidade</li><li>• Capacitar outras entidades</li><li>• Case Federasul</li></ul></div>
     </div>
   </div>
+</div>
 
-  <!-- MEETINGS -->
-  <div id="sec-meetings" class="section">
-    <div class="page-header">
-      <div>
-        <div class="page-title">Reuniões</div>
-        <div class="page-sub">Documentação, tópicos, resoluções e próximos passos</div>
-      </div>
-      <div class="hdr-actions">
-        <button class="btn btn-primary edit-only" onclick="openNewMeeting()">+ Nova Reunião</button>
-      </div>
-    </div>
-
-    <!-- New meeting form -->
-    <div class="new-meet-form" id="new-meet-form">
-      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1.25rem;">📋 Nova Reunião</div>
-      <div id="pending-prefill-banner"></div>
-      <div class="form-2col" style="margin-bottom:12px;">
-        <div class="form-group">
-          <div class="form-label">Título da reunião</div>
-          <input type="text" class="form-input" id="nm-title" placeholder="Ex: Reunião de Prospecção">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Data</div>
-          <input type="date" class="form-input" id="nm-date">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Local / Plataforma</div>
-          <input type="text" class="form-input" id="nm-local" placeholder="Ex: Sala de reuniões / Google Meet">
-        </div>
-        <div class="form-group">
-          <div class="form-label">Participantes</div>
-          <input type="text" class="form-input" id="nm-participants" placeholder="Ex: Aliny, Paulo, Diretoria">
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <div class="form-label">Tópicos da pauta</div>
-        <div id="nm-topics-list" style="margin-bottom:8px;"></div>
-        <div class="add-inline-row">
-          <input class="add-inline-input" id="nm-topic-inp" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){addNewMeetTopic();event.preventDefault();}">
-          <button class="btn btn-outline btn-sm" onclick="addNewMeetTopic()">+ Adicionar</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
-        <button class="btn btn-outline" onclick="closeNewMeeting()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveMeeting()">Criar Reunião</button>
-      </div>
-    </div>
-
-    <div class="meet-list" id="meet-list"></div>
-    <div id="meet-empty" style="text-align:center;padding:3rem;color:var(--text-3);font-size:14px;display:none;">
-      Nenhuma reunião registrada ainda.<br>Clique em <strong>+ Nova Reunião</strong> para começar.
-    </div>
+<!-- ── CONFIGURAÇÕES ──────────────────────────────── -->
+<div id="sec-settings" class="sec">
+  <div class="ph"><div><div class="ph-title">Configurações</div><div class="ph-sub">Dados e preferências</div></div></div>
+  <div class="scard">
+    <div class="scard-title">Sobre o projeto</div>
+    <div class="srow"><span class="srow-k">Projeto</span><span>ACIVI 360</span></div>
+    <div class="srow"><span class="srow-k">Fase</span><span>Fase 1 — Prospecção</span></div>
+    <div class="srow"><span class="srow-k">Ciclo</span><span>Q2 2026 · Trimestral</span></div>
+    <div class="srow"><span class="srow-k">Check-ins</span><span>Quinzenais</span></div>
   </div>
-
-</main>
-
-<!-- ══ PRESENTATION MODE ══════════════════════════════════════ -->
-<div class="pres-mode" id="pres-mode">
-  <div class="pres-header">
-    <div><div class="pres-logo">ACIVI 360</div><div class="pres-quarter">Fase 1 — Prospecção · Q2 2026</div></div>
-    <button class="btn btn-outline" onclick="closePresMode()" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2);">✕ Fechar</button>
+  <div class="scard">
+    <div class="scard-title">Check-in Quinzenal</div>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:1rem;">Registra snapshot do progresso atual para o gráfico de evolução.</p>
+    <button class="btn btn-navy edit-only" onclick="registerCheckin()">📌 Registrar Check-in Agora</button>
   </div>
-  <div class="pres-overall">
-    <div class="pres-overall-num" id="pres-overall-pct">0%</div>
-    <div class="pres-overall-lbl">Progresso geral do quarter</div>
+  <div class="scard">
+    <div class="scard-title">Dados</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-out" onclick="exportJSON()">📤 Exportar JSON</button>
+      <button class="btn btn-out" onclick="importJSON()">📥 Importar JSON</button>
+      <button class="btn btn-out" onclick="exportPDF()">📄 PDF</button>
+      <button class="btn btn-red edit-only" onclick="resetData()">🗑 Resetar</button>
+    </div>
+    <div style="margin-top:.75rem;font-size:12px;color:var(--t3);">Dados salvos no navegador. Exporte JSON para backup antes de resetar.</div>
   </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- PRESENTATION -->
+<div class="pres" id="pres">
+  <div class="pres-hdr">
+    <div><div class="pres-logo">ACIVI 360</div><div class="pres-sub">Fase 1 — Prospecção · Q2 2026</div></div>
+    <button class="btn btn-out" onclick="closePres()" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2);">✕ Fechar</button>
+  </div>
+  <div class="pres-overall"><div class="pres-num" id="pres-pct">0%</div><div class="pres-lbl">Progresso geral do quarter</div></div>
   <div class="pres-grid" id="pres-grid"></div>
 </div>
 
-<!-- ══ ADD OBJECTIVE MODAL ════════════════════════════════════ -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+<!-- ADD OBJECTIVE MODAL -->
+<div class="overlay" id="obj-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-title">Novo Objetivo</div>
-    <div class="modal-form-group">
-      <div class="form-label">Título do objetivo</div>
-      <input type="text" class="form-input" id="new-obj-title" placeholder="Ex: Conquistar novos associados" style="width:100%;">
-    </div>
-    <div class="modal-form-group">
-      <div class="form-label">Ícone</div>
-      <div class="emoji-picker" id="emoji-picker">
-        <span class="emoji-option selected" data-emoji="🎯" onclick="selectEmoji(this)">🎯</span>
-        <span class="emoji-option" data-emoji="📈" onclick="selectEmoji(this)">📈</span>
-        <span class="emoji-option" data-emoji="🤝" onclick="selectEmoji(this)">🤝</span>
-        <span class="emoji-option" data-emoji="💡" onclick="selectEmoji(this)">💡</span>
-        <span class="emoji-option" data-emoji="📣" onclick="selectEmoji(this)">📣</span>
-        <span class="emoji-option" data-emoji="🏆" onclick="selectEmoji(this)">🏆</span>
-        <span class="emoji-option" data-emoji="👥" onclick="selectEmoji(this)">👥</span>
-        <span class="emoji-option" data-emoji="🌱" onclick="selectEmoji(this)">🌱</span>
+    <div class="fg" style="margin-bottom:1rem;"><div class="fg-lbl">Título</div><input class="fi" id="new-obj-t" placeholder="Ex: Conquistar novos associados" style="width:100%"></div>
+    <div class="fg" style="margin-bottom:1rem;"><div class="fg-lbl">Ícone</div>
+      <div class="epick">
+        <span class="eopt sel" data-e="🎯" onclick="selE(this)">🎯</span><span class="eopt" data-e="📈" onclick="selE(this)">📈</span>
+        <span class="eopt" data-e="🤝" onclick="selE(this)">🤝</span><span class="eopt" data-e="💡" onclick="selE(this)">💡</span>
+        <span class="eopt" data-e="📣" onclick="selE(this)">📣</span><span class="eopt" data-e="🏆" onclick="selE(this)">🏆</span>
+        <span class="eopt" data-e="👥" onclick="selE(this)">👥</span><span class="eopt" data-e="🌱" onclick="selE(this)">🌱</span>
       </div>
     </div>
-    <div class="modal-form-group">
-      <div class="form-label">Cor</div>
-      <div class="color-picker" id="color-picker">
-        <div class="color-option selected" data-color="#1A4BBF" data-bg="#E6EEF9" style="background:#1A4BBF;" onclick="selectColor(this)"></div>
-        <div class="color-option" data-color="#0F6E56" data-bg="#E1F5EE" style="background:#0F6E56;" onclick="selectColor(this)"></div>
-        <div class="color-option" data-color="#C0390F" data-bg="#FAECE7" style="background:#C0390F;" onclick="selectColor(this)"></div>
-        <div class="color-option" data-color="#F5A800" data-bg="#FEF4DC" style="background:#F5A800;" onclick="selectColor(this)"></div>
-        <div class="color-option" data-color="#185FA5" data-bg="#E6F1FB" style="background:#185FA5;" onclick="selectColor(this)"></div>
-        <div class="color-option" data-color="#639922" data-bg="#EAF3DE" style="background:#639922;" onclick="selectColor(this)"></div>
+    <div class="fg" style="margin-bottom:1.5rem;"><div class="fg-lbl">Cor</div>
+      <div class="cpick">
+        <div class="copt sel" data-c="#1A4BBF" data-b="#E6EEF9" style="background:#1A4BBF" onclick="selC(this)"></div>
+        <div class="copt" data-c="#0F6E56" data-b="#E1F5EE" style="background:#0F6E56" onclick="selC(this)"></div>
+        <div class="copt" data-c="#C0390F" data-b="#FAECE7" style="background:#C0390F" onclick="selC(this)"></div>
+        <div class="copt" data-c="#F5A800" data-b="#FEF4DC" style="background:#F5A800" onclick="selC(this)"></div>
+        <div class="copt" data-c="#185FA5" data-b="#E6F1FB" style="background:#185FA5" onclick="selC(this)"></div>
+        <div class="copt" data-c="#639922" data-b="#EAF3DE" style="background:#639922" onclick="selC(this)"></div>
       </div>
     </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem;">
-      <button class="btn btn-outline" onclick="document.getElementById('modal-overlay').classList.remove('visible')">Cancelar</button>
-      <button class="btn btn-primary" onclick="addObjective()">Adicionar Objetivo</button>
+    <div style="display:flex;gap:7px;justify-content:flex-end;">
+      <button class="btn btn-out" onclick="document.getElementById('obj-modal').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-navy" onclick="addObj()">Adicionar</button>
     </div>
   </div>
 </div>
 
-<!-- ══ LOGIN SCREEN ══════════════════════════════════════════ -->
-<div class="login-screen" id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">ACIVI 360</div>
-    <div class="login-sub">Sistema OKR</div>
-    <div class="login-step active" id="step-user">
-      <div class="login-title">Quem é você?</div>
-      <div class="user-grid">
-        <button class="user-btn" data-user="Aliny" onclick="selectUser(this)">
-          <div class="u-av" style="background:#1A4BBF;">AL</div>
-          <div style="flex:1;text-align:left;"><div class="u-name">Aliny</div><div class="u-role">Administradora</div></div>
-          <span class="u-check">✓</span>
-        </button>
-        <button class="user-btn" data-user="Paulo" onclick="selectUser(this)">
-          <div class="u-av" style="background:#0F6E56;">PA</div>
-          <div style="flex:1;text-align:left;"><div class="u-name">Paulo</div><div class="u-role">Administrador</div></div>
-          <span class="u-check">✓</span>
-        </button>
-        <button class="user-btn" data-user="Membros" onclick="selectUser(this)">
-          <div class="u-av" style="background:#F5A800;color:#0A1E6E;">MB</div>
-          <div style="flex:1;text-align:left;"><div class="u-name">Membros</div><div class="u-role">Acesso leitura</div></div>
-          <span class="u-check">✓</span>
-        </button>
+<!-- LOGIN -->
+<div class="login" id="login">
+  <div class="lbox">
+    <div class="l-logo">ACIVI 360</div>
+    <div class="l-sub">Sistema OKR</div>
+    <div class="lstep active" id="lstep-u">
+      <div class="l-title">Quem é você?</div>
+      <div class="ugrid">
+        <button class="ubtn" data-u="Aliny" onclick="selU(this)"><div class="uav-sm" style="background:#1A4BBF;">AL</div><div><div class="uname">Aliny</div><div class="urole">Administradora</div></div><span class="uchk">✓</span></button>
+        <button class="ubtn" data-u="Paulo" onclick="selU(this)"><div class="uav-sm" style="background:#0F6E56;">PA</div><div><div class="uname">Paulo</div><div class="urole">Administrador</div></div><span class="uchk">✓</span></button>
+        <button class="ubtn" data-u="Membros" onclick="selU(this)"><div class="uav-sm" style="background:#F5A800;color:#0A1E6E;">MB</div><div><div class="uname">Membros</div><div class="urole">Somente leitura</div></div><span class="uchk">✓</span></button>
       </div>
-      <button class="login-btn" id="btn-next" disabled onclick="goToPin()">Continuar →</button>
+      <button class="lbtn" id="lbtn-next" disabled onclick="goPin()">Continuar →</button>
     </div>
-    <div class="login-step" id="step-pin">
-      <div class="login-back" onclick="backToUsers()">← Voltar</div>
-      <div class="login-title" id="pin-title">Digite seu PIN</div>
-      <div class="pin-inputs">
-        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p0" oninput="pinInput(0)">
-        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p1" oninput="pinInput(1)">
-        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p2" oninput="pinInput(2)">
-        <input class="pin-input" maxlength="1" type="password" inputmode="numeric" id="p3" oninput="pinInput(3)">
+    <div class="lstep" id="lstep-p">
+      <div class="lback" onclick="backU()">← Voltar</div>
+      <div class="l-title" id="l-pintitle">Digite seu PIN</div>
+      <div class="pins">
+        <input class="pin" maxlength="1" type="password" inputmode="numeric" id="p0" oninput="pi(0)">
+        <input class="pin" maxlength="1" type="password" inputmode="numeric" id="p1" oninput="pi(1)">
+        <input class="pin" maxlength="1" type="password" inputmode="numeric" id="p2" oninput="pi(2)">
+        <input class="pin" maxlength="1" type="password" inputmode="numeric" id="p3" oninput="pi(3)">
       </div>
-      <div class="pin-error" id="pin-error"></div>
-      <button class="login-btn" onclick="doLogin()">Entrar</button>
+      <div class="perr" id="perr"></div>
+      <button class="lbtn" onclick="doLogin()">Entrar</button>
     </div>
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════════════
-// DATA MODEL
-// ════════════════════════════════════════════════════════════
-const MEMBERS = ['Aliny','Paulo','(sem responsável)'];
-const defaultData = {
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const USERS={
+  Aliny:  {pin:'1234',color:'#1A4BBF',ini:'AL',canEdit:true},
+  Paulo:  {pin:'5678',color:'#0F6E56',ini:'PA',canEdit:true},
+  Membros:{pin:'0000',color:'#F5A800',ini:'MB',canEdit:false}
+};
+const OWNERS=['Aliny','Paulo','(sem responsável)'];
+
+const DEF={
   objectives:[
-    {
-      id:'O1',label:'Objetivo 1',
-      title:'Entender profundamente as necessidades dos colaboradores e estruturar a base da proposta de valor',
-      color:'#1A4BBF',bg:'#E6EEF9',icon:'👥',open:true,
-      krs:[
-        {id:'KR1.1',text:'Aplicar pesquisa de necessidades com link para ao menos 100 colaboradores respondentes',baseline:'0 respostas',target:'100 respostas',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-15',checkins:[]},
-        {id:'KR1.2',text:'Identificar e documentar as 5 principais demandas dos colaboradores por categoria de benefício',baseline:'0 categorias',target:'5 categorias',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-30',checkins:[]},
-        {id:'KR1.3',text:'Construir narrativa e estratégia de mídia aprovada pelo grupo (deck ou documento)',baseline:'Não iniciado',target:'Aprovado pelo grupo',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',checkins:[]},
-      ]
-    },
-    {
-      id:'O2',label:'Objetivo 2',
-      title:'Captar empresas parceiras e estruturar o portfólio inicial de benefícios para os colaboradores',
-      color:'#0F6E56',bg:'#E1F5EE',icon:'🤝',open:false,
-      krs:[
-        {id:'KR2.1',text:'Prospectar e apresentar proposta formal para ao menos 20 empresas parceiras potenciais',baseline:'0 empresas',target:'20 empresas',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',checkins:[]},
-        {id:'KR2.2',text:'Fechar parceria ativa com ao menos 5 empresas que gerem benefícios concretos aos colaboradores',baseline:'0 parcerias',target:'5 parcerias',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',checkins:[]},
-        {id:'KR2.3',text:'Catalogar e comunicar ao menos 10 benefícios disponíveis aos colaboradores',baseline:'0 benefícios',target:'10 benefícios',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
-        {id:'KR2.4',text:'Obter NPS ≥ 8 dos primeiros colaboradores que utilizaram algum benefício',baseline:'Não medido',target:'NPS ≥ 8',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
-      ]
-    },
-    {
-      id:'O3',label:'Objetivo 3',
-      title:'Estabelecer presença digital e associativa como base para crescimento nas próximas fases',
-      color:'#C0390F',bg:'#FAECE7',icon:'📣',open:false,
-      krs:[
-        {id:'KR3.1',text:'Definir e publicar o posicionamento da ACIVI 360 nas redes sociais (bio, visual, tom de voz)',baseline:'Não publicado',target:'Publicado e padronizado',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-07-31',checkins:[]},
-        {id:'KR3.2',text:'Alcançar 500 seguidores orgânicos no Instagram até o fim do trimestre',baseline:'0 seguidores',target:'500 seguidores',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
-        {id:'KR3.3',text:'Registrar ao menos 50 novos associados no período da Fase 1',baseline:'0 novos',target:'50 associados',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',checkins:[]},
-        {id:'KR3.4',text:'Publicar ao menos 12 conteúdos nas redes sociais (3 por semana no mês 1) sobre os benefícios ACIVI 360',baseline:'0 publicações',target:'12 publicações',progress:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',checkins:[]},
-      ]
-    }
+    {id:'O1',label:'Objetivo 1',title:'Entender as necessidades dos colaboradores e estruturar a proposta de valor',color:'#1A4BBF',bg:'#E6EEF9',icon:'👥',open:true,krs:[
+      {id:'KR1.1',text:'Aplicar pesquisa com link para 100 colaboradores respondentes',base:'0 respostas',target:'100 respostas',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-08-15',cis:[]},
+      {id:'KR1.2',text:'Identificar as 5 principais demandas por categoria de benefício',base:'0 categorias',target:'5 categorias',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-08-30',cis:[]},
+      {id:'KR1.3',text:'Construir narrativa e estratégia de mídia aprovada pelo grupo',base:'Não iniciado',target:'Aprovado',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',cis:[]}
+    ]},
+    {id:'O2',label:'Objetivo 2',title:'Captar empresas parceiras e estruturar portfólio de benefícios',color:'#0F6E56',bg:'#E1F5EE',icon:'🤝',open:false,krs:[
+      {id:'KR2.1',text:'Prospectar e apresentar proposta para 20 empresas parceiras',base:'0 empresas',target:'20 empresas',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',cis:[]},
+      {id:'KR2.2',text:'Fechar parceria com 5 empresas que gerem benefícios concretos',base:'0 parcerias',target:'5 parcerias',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-15',cis:[]},
+      {id:'KR2.3',text:'Catalogar e comunicar 10 benefícios disponíveis',base:'0 benefícios',target:'10 benefícios',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',cis:[]},
+      {id:'KR2.4',text:'Obter NPS ≥ 8 dos primeiros colaboradores que usaram benefício',base:'Não medido',target:'NPS ≥ 8',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',cis:[]}
+    ]},
+    {id:'O3',label:'Objetivo 3',title:'Estabelecer presença digital e associativa como base para crescimento',color:'#C0390F',bg:'#FAECE7',icon:'📣',open:false,krs:[
+      {id:'KR3.1',text:'Publicar posicionamento da ACIVI 360 nas redes (bio, visual, tom)',base:'Não publicado',target:'Publicado',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-07-31',cis:[]},
+      {id:'KR3.2',text:'Alcançar 500 seguidores no Instagram',base:'0 seguidores',target:'500 seguidores',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',cis:[]},
+      {id:'KR3.3',text:'Registrar 50 novos associados na Fase 1',base:'0',target:'50 associados',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-09-30',cis:[]},
+      {id:'KR3.4',text:'Publicar 12 conteúdos nas redes sobre benefícios ACIVI 360',base:'0',target:'12 publicações',prog:0,status:'gray',owner:'(sem responsável)',due:'2026-08-31',cis:[]}
+    ]}
   ],
-  globalCheckins:[] // [{date, pct}]
+  meetings:[],
+  checkins:[]
 };
 
-let data;
-function loadData(){
-  try{ const s=localStorage.getItem('acivi360-v2'); data=s?JSON.parse(s):JSON.parse(JSON.stringify(defaultData)); }
-  catch(e){ data=JSON.parse(JSON.stringify(defaultData)); }
-  // ensure fields exist on old data
-  data.objectives.forEach(o=>o.krs.forEach(k=>{
-    if(!k.status) k.status='gray';
-    if(!k.owner) k.owner='(sem responsável)';
-    if(!k.due) k.due='';
-    if(!k.checkins) k.checkins=[];
+let D, CU=null, selUBtn=null, nmTopics=[];
+
+function load(){
+  try{ const s=localStorage.getItem('acivi360'); D=s?JSON.parse(s):clone(DEF); }
+  catch(e){ D=clone(DEF); }
+  if(!D.meetings) D.meetings=[];
+  if(!D.checkins) D.checkins=[];
+  D.objectives.forEach(o=>o.krs.forEach(k=>{
+    if(!k.cis)k.cis=[];if(!k.status)k.status='gray';
+    if(!k.owner)k.owner='(sem responsável)';if(!k.due)k.due='';
   }));
-  if(!data.globalCheckins) data.globalCheckins=[];
 }
-function persist(){ localStorage.setItem('acivi360-v2',JSON.stringify(data)); }
-function saveAll(){ persist(); renderAll(); showToast('💾 Dados salvos!'); }
+function save(){ localStorage.setItem('acivi360',JSON.stringify(D)); }
+function saveAll(){ save(); toast('💾 Salvo!'); renderAll(); }
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
 
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function nav(name, el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(name==='meetings') renderMeetings();
+  if(name==='dashboard'){ renderAlerts(); renderChart(); }
+}
+
+// ══════════════════════════════════════════
 // METRICS
-// ════════════════════════════════════════════════════════════
-function allKRs(){ return data.objectives.flatMap(o=>o.krs); }
-function calcOverall(){ const ks=allKRs(); return ks.length?Math.round(ks.reduce((a,k)=>a+k.progress,0)/ks.length):0; }
-function calcObjAvg(obj){ return obj.krs.length?Math.round(obj.krs.reduce((a,k)=>a+k.progress,0)/obj.krs.length):0; }
-function updateMetrics(){
+// ══════════════════════════════════════════
+function allKRs(){ return D.objectives.flatMap(o=>o.krs); }
+function overall(){ const k=allKRs(); return k.length?Math.round(k.reduce((a,b)=>a+b.prog,0)/k.length):0; }
+function objAvg(o){ return o.krs.length?Math.round(o.krs.reduce((a,k)=>a+k.prog,0)/o.krs.length):0; }
+function updMetrics(){
   const ks=allKRs();
-  document.getElementById('m-objectives').textContent=data.objectives.length;
-  document.getElementById('m-krs').textContent=ks.length;
-  document.getElementById('m-progress').textContent=calcOverall()+'%';
-  document.getElementById('m-active').textContent=ks.filter(k=>k.progress>0).length;
+  document.getElementById('m-obj').textContent=D.objectives.length;
+  document.getElementById('m-kr').textContent=ks.length;
+  document.getElementById('m-prog').textContent=overall()+'%';
+  document.getElementById('m-act').textContent=ks.filter(k=>k.prog>0).length;
 }
 
-// ════════════════════════════════════════════════════════════
-// DEADLINE ALERTS
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════
 function renderAlerts(){
-  const sec=document.getElementById('alert-section');
-  if(!sec) return;
+  const el=document.getElementById('alerts'); if(!el) return;
   const today=new Date(); today.setHours(0,0,0,0);
-  let html='';
-  allKRs().forEach(kr=>{
-    if(!kr.due||kr.progress>=100) return;
-    const due=new Date(kr.due+'T00:00:00');
-    const diff=Math.round((due-today)/(1000*60*60*24));
-    if(diff<0){
-      html+=`<div class="alert-item">⚠️ <strong>${kr.id}</strong> — "${kr.text.substring(0,60)}..." está <strong>atrasado</strong> (venceu ${Math.abs(diff)}d atrás)</div>`;
-    } else if(diff<=10){
-      html+=`<div class="alert-item warn">🔔 <strong>${kr.id}</strong> — "${kr.text.substring(0,60)}..." vence em <strong>${diff} dia${diff!==1?'s':''}</strong></div>`;
-    }
+  let h='';
+  allKRs().forEach(k=>{
+    if(!k.due||k.prog>=100) return;
+    const d=new Date(k.due+'T00:00:00');
+    const diff=Math.round((d-today)/86400000);
+    if(diff<0) h+=`<div class="alert alert-red">⚠️ <strong>${k.id}</strong> venceu há ${Math.abs(diff)} dia(s): "${k.text.substring(0,55)}…"</div>`;
+    else if(diff<=10) h+=`<div class="alert alert-warn">🔔 <strong>${k.id}</strong> vence em ${diff} dia(s): "${k.text.substring(0,55)}…"</div>`;
   });
-  sec.innerHTML=html;
+  el.innerHTML=h;
 }
 
-// ════════════════════════════════════════════════════════════
-// HISTORY CHART
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// CHART
+// ══════════════════════════════════════════
 function renderChart(){
-  const pts=data.globalCheckins;
-  const empty=document.getElementById('chart-empty');
-  const canvas=document.getElementById('histChart');
-  if(!pts||pts.length<1){ empty.style.display='block'; canvas.style.display='none'; return; }
-  empty.style.display='none'; canvas.style.display='block';
-  const ctx=canvas.getContext('2d');
-  const W=canvas.offsetWidth||600; const H=160;
-  canvas.width=W; canvas.height=H;
+  const pts=D.checkins;
+  const empty=document.getElementById('hchart-empty');
+  const cv=document.getElementById('hchart');
+  if(!pts||!pts.length){ empty.style.display='block'; cv.style.display='none'; return; }
+  empty.style.display='none'; cv.style.display='block';
+  const ctx=cv.getContext('2d');
+  const W=cv.offsetWidth||600, H=140;
+  cv.width=W; cv.height=H;
   ctx.clearRect(0,0,W,H);
-  const pad={l:40,r:20,t:16,b:30};
-  const iW=W-pad.l-pad.r; const iH=H-pad.t-pad.b;
-  // grid
-  ctx.strokeStyle='rgba(10,30,110,.06)'; ctx.lineWidth=1;
+  const p={l:36,r:16,t:12,b:26};
+  const iW=W-p.l-p.r, iH=H-p.t-p.b;
   [0,25,50,75,100].forEach(v=>{
-    const y=pad.t+iH*(1-v/100);
-    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
-    ctx.fillStyle='#7A8FC2'; ctx.font='10px DM Sans,sans-serif'; ctx.textAlign='right';
-    ctx.fillText(v+'%',pad.l-6,y+4);
+    const y=p.t+iH*(1-v/100);
+    ctx.strokeStyle='rgba(10,30,110,.06)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(p.l,y); ctx.lineTo(W-p.r,y); ctx.stroke();
+    ctx.fillStyle='#7A8FC2'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='right';
+    ctx.fillText(v+'%',p.l-4,y+3);
   });
-  // line
   const step=pts.length>1?iW/(pts.length-1):0;
   ctx.beginPath();
-  pts.forEach((p,i)=>{
-    const x=pad.l+(pts.length===1?iW/2:i*step);
-    const y=pad.t+iH*(1-p.pct/100);
+  pts.forEach((pt,i)=>{
+    const x=p.l+(pts.length===1?iW/2:i*step), y=p.t+iH*(1-pt.pct/100);
     i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
   });
   ctx.strokeStyle='#1A4BBF'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.stroke();
-  // fill
-  ctx.lineTo(pad.l+(pts.length===1?iW/2:(pts.length-1)*step),pad.t+iH);
-  ctx.lineTo(pad.l+(pts.length===1?iW/2:0),pad.t+iH);
-  ctx.closePath();
-  ctx.fillStyle='rgba(26,75,191,.08)'; ctx.fill();
-  // dots + labels
-  pts.forEach((p,i)=>{
-    const x=pad.l+(pts.length===1?iW/2:i*step);
-    const y=pad.t+iH*(1-p.pct/100);
-    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
-    ctx.fillStyle='#1A4BBF'; ctx.fill();
+  const lx=p.l+(pts.length===1?iW/2:(pts.length-1)*step);
+  ctx.lineTo(lx,p.t+iH); ctx.lineTo(p.l+(pts.length===1?iW/2:0),p.t+iH);
+  ctx.closePath(); ctx.fillStyle='rgba(26,75,191,.07)'; ctx.fill();
+  pts.forEach((pt,i)=>{
+    const x=p.l+(pts.length===1?iW/2:i*step), y=p.t+iH*(1-pt.pct/100);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fillStyle='#1A4BBF'; ctx.fill();
     ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
-    // date label
-    const d=new Date(p.date); const lbl=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+    const dd=new Date(pt.date); const lbl=`${String(dd.getDate()).padStart(2,'0')}/${String(dd.getMonth()+1).padStart(2,'0')}`;
     ctx.fillStyle='#7A8FC2'; ctx.font='9px DM Sans,sans-serif'; ctx.textAlign='center';
-    ctx.fillText(lbl,x,H-pad.b+14);
+    ctx.fillText(lbl,x,H-p.b+13);
   });
 }
-
-// ════════════════════════════════════════════════════════════
-// REGISTER GLOBAL CHECK-IN
-// ════════════════════════════════════════════════════════════
 function registerCheckin(){
-  const pct=calcOverall();
-  const today=new Date().toISOString().split('T')[0];
-  // avoid duplicate same day
-  if(data.globalCheckins.length && data.globalCheckins[data.globalCheckins.length-1].date===today){
-    showToast('⚠️ Já existe um check-in hoje. Aguarde a próxima quinzena.'); return;
-  }
-  data.globalCheckins.push({date:today,pct});
-  persist(); renderChart();
-  showToast(`📌 Check-in registrado: ${pct}% em ${today}`);
+  const pct=overall(), today=new Date().toISOString().split('T')[0];
+  if(D.checkins.length && D.checkins[D.checkins.length-1].date===today){ toast('⚠️ Já existe check-in hoje'); return; }
+  D.checkins.push({date:today,pct}); save(); renderChart(); toast(`📌 Check-in: ${pct}%`);
 }
 
-// ════════════════════════════════════════════════════════════
-// RENDER OKR LISTS
-// ════════════════════════════════════════════════════════════
-function statusClass(s){ return s==='green'?'s-green':s==='yellow'?'s-yellow':s==='red'?'s-red':'s-gray'; }
-function statusLabel(s){ return s==='green'?'🟢 No prazo':s==='yellow'?'🟡 Em risco':s==='red'?'🔴 Atrasado':'⚪ Indefinido'; }
-function dueClass(due){
-  if(!due) return 'due-chip';
+// ══════════════════════════════════════════
+// RENDER OKR LIST (shared by dash + manage)
+// ══════════════════════════════════════════
+function fmtDue(due){
+  if(!due) return {cls:'chip chip-due',lbl:'Sem prazo'};
   const today=new Date(); today.setHours(0,0,0,0);
-  const d=new Date(due+'T00:00:00');
-  const diff=Math.round((d-today)/(1000*60*60*24));
-  if(diff<0) return 'due-chip overdue';
-  if(diff<=10) return 'due-chip soon';
-  return 'due-chip';
+  const d=new Date(due+'T00:00:00'), diff=Math.round((d-today)/86400000);
+  const dd=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  if(diff<0) return {cls:'chip chip-due overdue',lbl:'⚠ '+dd};
+  if(diff<=10) return {cls:'chip chip-due soon',lbl:'🔔 '+dd};
+  return {cls:'chip chip-due',lbl:'📅 '+dd};
 }
-function fmtDate(due){ if(!due) return 'Sem prazo'; const d=new Date(due+'T00:00:00'); return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`; }
+function sBadge(s){ return s==='green'?'<span class="s-green">🟢 No prazo</span>':s==='yellow'?'<span class="s-yellow">🟡 Em risco</span>':s==='red'?'<span class="s-red">🔴 Atrasado</span>':'<span class="s-gray">⚪ Indefinido</span>'; }
 
-function renderOKRList(containerId, editable){
-  const container=document.getElementById(containerId);
-  if(!container) return;
-  container.innerHTML='';
-  data.objectives.forEach(obj=>{
-    const avg=calcObjAvg(obj);
-    const card=document.createElement('div');
-    card.className='okr-card'+(obj.open?' open':'');
-    card.dataset.objid=obj.id;
+function renderOKR(cid, editable){
+  const el=document.getElementById(cid); if(!el) return;
+  el.innerHTML='';
+  D.objectives.forEach(obj=>{
+    const avg=objAvg(obj);
+    const div=document.createElement('div');
+    div.className='okr-card'+(obj.open?' open':'');
+    div.dataset.oid=obj.id;
 
-    // KR rows
-    let krHtml=obj.krs.map(kr=>{
-      const sBtns=['green','yellow','red'].map(s=>
-        `<button class="s-btn${kr.status===s?' active-'+s:''}" onclick="setStatus('${obj.id}','${kr.id}','${s}')">${s==='green'?'🟢 OK':s==='yellow'?'🟡 Risco':'🔴 Atraso'}</button>`
-      ).join('');
-      const ownerOpts=MEMBERS.map(m=>`<option value="${m}"${kr.owner===m?' selected':''}>${m}</option>`).join('');
-      const checkinList=kr.checkins&&kr.checkins.length
-        ? kr.checkins.slice(-3).reverse().map(c=>`<div class="checkin-entry"><div class="checkin-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('')
-        : '<div style="font-size:12px;color:var(--text-3);">Nenhum check-in ainda.</div>';
-
+    const krHTML=obj.krs.map(kr=>{
+      const due=fmtDue(kr.due);
+      const ownOpts=OWNERS.map(o=>`<option${kr.owner===o?' selected':''}>${o}</option>`).join('');
+      const ciHTML=kr.cis.length ? kr.cis.slice(-3).reverse().map(c=>`<div class="ci-entry"><div class="ci-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('') : '<div style="font-size:11px;color:var(--t3)">Nenhum check-in ainda.</div>';
       return `<div class="kr-item">
-        <div class="kr-num">${kr.id}</div>
-        <div class="kr-body">
-          ${editable
-            ? `<div class="kr-text" contenteditable="true" onblur="updateKRText('${obj.id}','${kr.id}',this.innerText)">${kr.text}</div>`
-            : `<div class="kr-text">${kr.text}</div>`}
+        <div class="kr-id">${kr.id}</div>
+        <div>
+          ${editable?`<div class="kr-text" contenteditable="true" onblur="updKRText('${obj.id}','${kr.id}',this.innerText)">${kr.text}</div>`:`<div class="kr-text">${kr.text}</div>`}
           <div class="kr-details">
-            <span>Baseline: ${kr.baseline}</span>
-            <span class="${dueClass(kr.due)}" ${editable?`onclick="editDue('${obj.id}','${kr.id}')" title="Clique para editar prazo"`:''}>${fmtDate(kr.due)}</span>
-            ${editable
-              ? `<select class="owner-chip" style="border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;" onchange="setOwner('${obj.id}','${kr.id}',this.value)">${ownerOpts}</select>`
-              : `<span class="owner-chip">👤 ${kr.owner}</span>`}
-            <span class="status-badge ${statusClass(kr.status)}">${statusLabel(kr.status)}</span>
+            <span>Base: ${kr.base}</span>
+            <span class="${due.cls}" ${editable?`onclick="editDue('${obj.id}','${kr.id}')" title="Editar prazo"`:''}>${due.lbl}</span>
+            ${editable?`<select style="border:none;background:none;font-size:11px;color:var(--navy);cursor:pointer;font-family:'DM Sans',sans-serif;" onchange="setOwner('${obj.id}','${kr.id}',this.value)">${ownOpts}</select>`:`<span class="chip chip-blue">👤 ${kr.owner}</span>`}
+            ${sBadge(kr.status)}
           </div>
         </div>
         <div class="kr-right">
-          <div class="kr-target-lbl">Meta</div>
-          <div class="kr-target-val">${kr.target}</div>
-          ${editable?`<div class="kr-status-row">${sBtns}</div>`:''}
-          <div class="kr-slider-row">
-            <span class="kr-pct-lbl" id="sv-${kr.id}-${containerId}">${kr.progress}%</span>
-            <input type="range" min="0" max="100" step="5" value="${kr.progress}" style="accent-color:${obj.color}" ${!editable?'disabled':''} oninput="updateProgress('${obj.id}','${kr.id}',this.value,'${containerId}')">
+          <div class="kr-tgt-lbl">Meta</div>
+          <div class="kr-tgt-val">${kr.target}</div>
+          ${editable?`<div style="display:flex;gap:4px;justify-content:flex-end;margin-bottom:4px;">
+            <button class="sbtn${kr.status==='green'?' sa-g':''}" onclick="setSt('${obj.id}','${kr.id}','green')">🟢</button>
+            <button class="sbtn${kr.status==='yellow'?' sa-y':''}" onclick="setSt('${obj.id}','${kr.id}','yellow')">🟡</button>
+            <button class="sbtn${kr.status==='red'?' sa-r':''}" onclick="setSt('${obj.id}','${kr.id}','red')">🔴</button>
+          </div>`:''}
+          <div class="kr-row">
+            <span class="kr-pct" id="kpct-${kr.id}-${cid}">${kr.prog}%</span>
+            <input type="range" min="0" max="100" step="5" value="${kr.prog}" style="accent-color:${obj.color}" ${editable?'':'disabled'} oninput="updProg('${obj.id}','${kr.id}',this.value,'${cid}')">
           </div>
-          <div class="kr-mini-bar"><div class="kr-mini-fill" id="mf-${kr.id}-${containerId}" style="width:${kr.progress}%;background:${obj.color};"></div></div>
+          <div class="kr-mini"><div class="kr-mini-fill" id="kmf-${kr.id}-${cid}" style="width:${kr.prog}%;background:${obj.color}"></div></div>
         </div>
       </div>
-      ${editable?`<div class="checkin-section">
-        <div class="checkin-title"><span>💬 Check-ins quinzenais</span></div>
-        <div id="ci-list-${kr.id}">${checkinList}</div>
-        <div class="checkin-form">
-          <input class="checkin-input" id="ci-${kr.id}" placeholder="Atualização quinzenal — o que avançou?">
-          <button class="btn btn-primary btn-sm" onclick="addCheckin('${obj.id}','${kr.id}')">Registrar</button>
+      ${editable?`<div class="ci-section">
+        <div class="ci-title">💬 Check-ins quinzenais</div>
+        <div id="cil-${kr.id}">${ciHTML}</div>
+        <div class="ci-form">
+          <input class="ci-inp" id="ci-${kr.id}" placeholder="Atualização desta quinzena…">
+          <button class="btn btn-navy btn-sm" onclick="addCI('${obj.id}','${kr.id}')">Registrar</button>
         </div>
       </div>`:''}`;
     }).join('');
 
-    let addKrHtml=editable?`
-      <div class="add-kr-form" id="addkr-${obj.id}">
-        <div class="form-row">
-          <div class="form-group" style="grid-column:1/-1">
-            <div class="form-label">Descrição do Key Result</div>
-            <input type="text" class="form-input" id="nkr-text-${obj.id}" placeholder="Ex: Atingir 100 novos associados">
-          </div>
-          <div class="form-group"><div class="form-label">Baseline</div><input type="text" class="form-input" id="nkr-base-${obj.id}" placeholder="Ex: 0 associados"></div>
-          <div class="form-group"><div class="form-label">Meta</div><input type="text" class="form-input" id="nkr-target-${obj.id}" placeholder="Ex: 100 associados"></div>
-          <div class="form-group"><div class="form-label">Responsável</div><select class="form-select" id="nkr-owner-${obj.id}">${MEMBERS.map(m=>`<option>${m}</option>`).join('')}</select></div>
-          <div class="form-group"><div class="form-label">Prazo</div><input type="date" class="form-input" id="nkr-due-${obj.id}"></div>
-        </div>
-        <div class="form-actions">
-          <button class="btn btn-outline btn-sm" onclick="toggleAddKR('${obj.id}')">Cancelar</button>
-          <button class="btn btn-primary btn-sm" onclick="addKR('${obj.id}')">Adicionar KR</button>
-        </div>
-      </div>` : '';
+    const addKrHTML=editable?`<div class="add-kr" id="akr-${obj.id}">
+      <div class="fgrid" style="margin-bottom:8px;">
+        <div class="fg" style="grid-column:1/-1"><div class="fg-lbl">Descrição</div><input class="fi" id="nkr-t-${obj.id}" placeholder="Descrição do Key Result"></div>
+        <div class="fg"><div class="fg-lbl">Baseline</div><input class="fi" id="nkr-b-${obj.id}" placeholder="Ex: 0"></div>
+        <div class="fg"><div class="fg-lbl">Meta</div><input class="fi" id="nkr-m-${obj.id}" placeholder="Ex: 100"></div>
+        <div class="fg"><div class="fg-lbl">Responsável</div><select class="fi" id="nkr-o-${obj.id}">${OWNERS.map(o=>`<option>${o}</option>`).join('')}</select></div>
+        <div class="fg"><div class="fg-lbl">Prazo</div><input type="date" class="fi" id="nkr-d-${obj.id}"></div>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:flex-end;">
+        <button class="btn btn-out btn-sm" onclick="document.getElementById('akr-${obj.id}').classList.remove('open')">Cancelar</button>
+        <button class="btn btn-navy btn-sm" onclick="addKR('${obj.id}')">Adicionar KR</button>
+      </div>
+    </div>`:'';
 
-    card.innerHTML=`
-      <div class="okr-hdr" onclick="toggleCard('${obj.id}')">
-        <div class="okr-icon" style="background:${obj.bg};">${obj.icon}</div>
+    div.innerHTML=`
+      <div class="okr-hdr" onclick="toggleOKR('${obj.id}')">
+        <div class="okr-icon" style="background:${obj.bg}">${obj.icon}</div>
         <div class="okr-info">
           <div class="okr-label">${obj.label}</div>
-          <div class="okr-title-text">${obj.title}</div>
+          <div class="okr-title">${obj.title}</div>
           <div class="okr-meta">
-            <span class="okr-pct" style="color:${obj.color};">${avg}%</span>
-            <div class="okr-bar"><div class="okr-bar-fill" id="ob-${obj.id}-${containerId}" style="width:${avg}%;background:${obj.color};"></div></div>
-            <span class="status-badge ${avg>=70?'s-green':avg>=30?'s-yellow':avg>0?'s-red':'s-gray'}">${avg>=70?'🟢 No prazo':avg>=30?'🟡 Em risco':avg>0?'🔴 Baixo':'⚪ Não iniciado'}</span>
+            <span class="okr-pct" style="color:${obj.color}" id="opct-${obj.id}-${cid}">${avg}%</span>
+            <div class="okr-bar"><div class="okr-bar-fill" id="obar-${obj.id}-${cid}" style="width:${avg}%;background:${obj.color}"></div></div>
           </div>
         </div>
-        <div class="okr-actions" onclick="event.stopPropagation()">
-          ${editable?`<button class="btn btn-outline btn-sm edit-only" onclick="toggleAddKR('${obj.id}')">+ KR</button>
-          <button class="btn btn-danger btn-sm edit-only" onclick="deleteObjective('${obj.id}')">🗑</button>`:''}
+        <div class="okr-acts" onclick="event.stopPropagation()">
+          ${editable?`<button class="btn btn-out btn-xs edit-only" onclick="document.getElementById('akr-${obj.id}').classList.add('open')">+ KR</button>
+          <button class="btn btn-red btn-xs edit-only" onclick="delObj('${obj.id}')">🗑</button>`:''}
           <span class="chevron">⌄</span>
         </div>
       </div>
-      <div class="kr-list">${krHtml}${addKrHtml}</div>`;
-    container.appendChild(card);
+      <div class="kr-list">${krHTML}${addKrHTML}</div>`;
+    el.appendChild(div);
   });
 }
 
 function renderAll(){
-  renderOKRList('okr-list-dash',false);
-  renderOKRList('okr-list-manage',true);
-  updateMetrics();
-  renderAlerts();
-  renderChart();
-  applyRoleRestrictions();
+  renderOKR('okr-dash',false);
+  renderOKR('okr-manage',true);
+  updMetrics(); renderAlerts(); renderChart();
+  applyRole();
 }
 
-// ════════════════════════════════════════════════════════════
-// INTERACTIONS
-// ════════════════════════════════════════════════════════════
-function toggleCard(objId){
-  const obj=data.objectives.find(o=>o.id===objId);
-  if(obj) obj.open=!obj.open;
-  document.querySelectorAll('.okr-card').forEach(c=>{
-    if(c.dataset.objid===objId) c.classList.toggle('open',obj.open);
-  });
+// ══════════════════════════════════════════
+// OKR INTERACTIONS
+// ══════════════════════════════════════════
+function toggleOKR(oid){
+  const o=D.objectives.find(x=>x.id===oid); if(!o) return;
+  o.open=!o.open;
+  document.querySelectorAll('.okr-card').forEach(c=>{ if(c.dataset.oid===oid) c.classList.toggle('open',o.open); });
 }
-
-function updateProgress(objId,krId,val,srcCid){
+function updProg(oid,kid,val,cid){
   val=parseInt(val);
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  kr.progress=val;
-  ['okr-list-dash','okr-list-manage'].forEach(cid=>{
-    const sv=document.getElementById('sv-'+krId+'-'+cid);
-    const mf=document.getElementById('mf-'+krId+'-'+cid);
-    if(sv) sv.textContent=val+'%';
-    if(mf) mf.style.width=val+'%';
+  const o=D.objectives.find(x=>x.id===oid), k=o.krs.find(x=>x.id===kid);
+  k.prog=val;
+  ['okr-dash','okr-manage'].forEach(c=>{
+    const pe=document.getElementById('kpct-'+kid+'-'+c);
+    const me=document.getElementById('kmf-'+kid+'-'+c);
+    if(pe) pe.textContent=val+'%';
+    if(me) me.style.width=val+'%';
   });
-  const avg=calcObjAvg(obj);
-  ['okr-list-dash','okr-list-manage'].forEach(cid=>{
-    const ob=document.getElementById('ob-'+objId+'-'+cid);
+  const avg=objAvg(o);
+  ['okr-dash','okr-manage'].forEach(c=>{
+    const ob=document.getElementById('obar-'+oid+'-'+c);
+    const op=document.getElementById('opct-'+oid+'-'+c);
     if(ob) ob.style.width=avg+'%';
+    if(op) op.textContent=avg+'%';
   });
-  document.querySelectorAll('.okr-card').forEach(c=>{
-    if(c.dataset.objid===objId){
-      const pctEl=c.querySelector('.okr-pct');
-      if(pctEl) pctEl.textContent=avg+'%';
-    }
-  });
-  updateMetrics();
-  persist();
+  updMetrics(); save();
+}
+function updKRText(oid,kid,t){ const o=D.objectives.find(x=>x.id===oid),k=o.krs.find(x=>x.id===kid); k.text=t.trim(); save(); }
+function setSt(oid,kid,s){ const o=D.objectives.find(x=>x.id===oid),k=o.krs.find(x=>x.id===kid); k.status=s; save(); renderAll(); }
+function setOwner(oid,kid,v){ const o=D.objectives.find(x=>x.id===oid),k=o.krs.find(x=>x.id===kid); k.owner=v; save(); }
+function editDue(oid,kid){
+  const o=D.objectives.find(x=>x.id===oid),k=o.krs.find(x=>x.id===kid);
+  const v=prompt('Prazo (AAAA-MM-DD):',k.due||''); if(v===null) return;
+  k.due=v.trim(); save(); renderAll();
+}
+function addCI(oid,kid){
+  const inp=document.getElementById('ci-'+kid), note=inp.value.trim();
+  if(!note){ toast('⚠️ Escreva a atualização'); return; }
+  const o=D.objectives.find(x=>x.id===oid),k=o.krs.find(x=>x.id===kid);
+  const d=new Date(), ds=`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  k.cis.push({date:ds,note,user:CU?CU.name:'—'}); inp.value=''; save();
+  const el=document.getElementById('cil-'+kid);
+  if(el) el.innerHTML=k.cis.slice(-3).reverse().map(c=>`<div class="ci-entry"><div class="ci-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('');
+  toast('💬 Check-in registrado!');
+}
+function addKR(oid){
+  const o=D.objectives.find(x=>x.id===oid);
+  const t=document.getElementById('nkr-t-'+oid).value.trim();
+  if(!t){ toast('⚠️ Descreva o KR'); return; }
+  const n=o.krs.length+1, kid=oid.replace('O','KR')+'.'+n;
+  o.krs.push({id:kid,text:t,base:document.getElementById('nkr-b-'+oid).value.trim()||'—',target:document.getElementById('nkr-m-'+oid).value.trim()||'—',prog:0,status:'gray',owner:document.getElementById('nkr-o-'+oid).value,due:document.getElementById('nkr-d-'+oid).value,cis:[]});
+  save(); toast('✅ KR adicionado!'); renderAll();
+}
+function delObj(oid){
+  if(!confirm('Remover este objetivo e todos os KRs?')) return;
+  D.objectives=D.objectives.filter(x=>x.id!==oid); save(); toast('🗑 Removido'); renderAll();
 }
 
-function updateKRText(objId,krId,text){
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  kr.text=text.trim(); persist();
-}
-
-function setStatus(objId,krId,status){
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  kr.status=status; persist(); renderAll();
-}
-
-function setOwner(objId,krId,owner){
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  kr.owner=owner; persist();
-}
-
-function editDue(objId,krId){
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  const val=prompt('Prazo do KR (AAAA-MM-DD):',kr.due||'');
-  if(val===null) return;
-  kr.due=val.trim(); persist(); renderAll();
-}
-
-function toggleAddKR(objId){
-  const f=document.getElementById('addkr-'+objId);
-  if(f) f.classList.toggle('visible');
-}
-
-function addKR(objId){
-  const obj=data.objectives.find(o=>o.id===objId);
-  const text=document.getElementById('nkr-text-'+objId).value.trim();
-  const baseline=document.getElementById('nkr-base-'+objId).value.trim();
-  const target=document.getElementById('nkr-target-'+objId).value.trim();
-  const owner=document.getElementById('nkr-owner-'+objId).value;
-  const due=document.getElementById('nkr-due-'+objId).value;
-  if(!text){ showToast('⚠️ Descreva o Key Result'); return; }
-  const num=obj.krs.length+1;
-  const krId=obj.id.replace('O','KR')+'.'+num;
-  obj.krs.push({id:krId,text,baseline:baseline||'—',target:target||'—',progress:0,status:'gray',owner:owner||'(sem responsável)',due:due||'',checkins:[]});
-  showToast('✅ KR adicionado!'); persist(); renderAll();
-}
-
-function addCheckin(objId,krId){
-  const inp=document.getElementById('ci-'+krId);
-  const note=inp.value.trim();
-  if(!note){ showToast('⚠️ Escreva a atualização'); return; }
-  const obj=data.objectives.find(o=>o.id===objId);
-  const kr=obj.krs.find(k=>k.id===krId);
-  if(!kr.checkins) kr.checkins=[];
-  const today=new Date();
-  const dateStr=`${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
-  kr.checkins.push({date:dateStr,note,user:currentUser?currentUser.name:'—'});
-  inp.value='';
-  persist();
-  // re-render check-in list only
-  const listEl=document.getElementById('ci-list-'+krId);
-  if(listEl) listEl.innerHTML=kr.checkins.slice(-3).reverse().map(c=>`<div class="checkin-entry"><div class="checkin-entry-date">${c.date} · ${c.user}</div>${c.note}</div>`).join('');
-  showToast('💬 Check-in registrado!');
-}
-
-function deleteObjective(objId){
-  if(!confirm('Remover este objetivo e todos os seus KRs?')) return;
-  data.objectives=data.objectives.filter(o=>o.id!==objId);
-  persist(); showToast('🗑️ Objetivo removido'); renderAll();
-}
-
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
 // ADD OBJECTIVE MODAL
-// ════════════════════════════════════════════════════════════
-let selEmoji='🎯',selColor='#1A4BBF',selBg='#E6EEF9';
-function openAddObjective(){
-  document.getElementById('modal-overlay').classList.add('visible');
-  document.getElementById('new-obj-title').value='';
+// ══════════════════════════════════════════
+let selEmoji='🎯', selColor='#1A4BBF', selBg='#E6EEF9';
+function openAddObj(){
+  document.getElementById('obj-modal').classList.add('open');
+  document.getElementById('new-obj-t').value='';
   selEmoji='🎯'; selColor='#1A4BBF'; selBg='#E6EEF9';
-  document.querySelectorAll('.emoji-option').forEach(e=>e.classList.toggle('selected',e.dataset.emoji===selEmoji));
-  document.querySelectorAll('.color-option').forEach(e=>e.classList.toggle('selected',e.dataset.color===selColor));
+  document.querySelectorAll('.eopt').forEach(e=>e.classList.toggle('sel',e.dataset.e===selEmoji));
+  document.querySelectorAll('.copt').forEach(e=>e.classList.toggle('sel',e.dataset.c===selColor));
 }
-function selectEmoji(el){ selEmoji=el.dataset.emoji; document.querySelectorAll('.emoji-option').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); }
-function selectColor(el){ selColor=el.dataset.color; selBg=el.dataset.bg; document.querySelectorAll('.color-option').forEach(e=>e.classList.remove('selected')); el.classList.add('selected'); }
-function addObjective(){
-  const title=document.getElementById('new-obj-title').value.trim();
-  if(!title){ showToast('⚠️ Informe o título do objetivo'); return; }
-  const num=data.objectives.length+1;
-  data.objectives.push({id:'O'+num,label:'Objetivo '+num,title,color:selColor,bg:selBg,icon:selEmoji,open:false,krs:[]});
-  document.getElementById('modal-overlay').classList.remove('visible');
-  persist(); showToast('✅ Objetivo adicionado!'); renderAll();
-}
-function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) document.getElementById('modal-overlay').classList.remove('visible'); }
-
-// ════════════════════════════════════════════════════════════
-// PRESENTATION MODE
-// ════════════════════════════════════════════════════════════
-function openPresMode(){
-  const overall=calcOverall();
-  document.getElementById('pres-overall-pct').textContent=overall+'%';
-  const grid=document.getElementById('pres-grid');
-  grid.innerHTML=data.objectives.map(obj=>{
-    const avg=calcObjAvg(obj);
-    const krRows=obj.krs.map(kr=>`<div class="pres-kr-row"><span>${kr.id}: ${kr.text.substring(0,50)}${kr.text.length>50?'…':''}</span><span style="font-weight:600;color:${obj.color.replace('#','rgba(').replace(/^/,'').slice(0,-1)};opacity:.9;color:#fff;">${kr.progress}%</span></div>`).join('');
-    return `<div class="pres-card">
-      <div class="pres-obj-label">${obj.label}</div>
-      <div class="pres-obj-title">${obj.title}</div>
-      <div class="pres-pct" style="color:${obj.color};">${avg}%</div>
-      <div class="pres-bar"><div class="pres-bar-fill" style="width:${avg}%;background:${obj.color};"></div></div>
-      ${krRows}
-    </div>`;
-  }).join('');
-  document.getElementById('pres-mode').classList.add('active');
-}
-function closePresMode(){ document.getElementById('pres-mode').classList.remove('active'); }
-
-// ════════════════════════════════════════════════════════════
-// EXPORT PDF
-// ════════════════════════════════════════════════════════════
-function exportPDF(){
-  const overall=calcOverall();
-  const rows=data.objectives.map(obj=>{
-    const avg=calcObjAvg(obj);
-    const krs=obj.krs.map(kr=>`
-      <tr style="font-size:12px;">
-        <td style="padding:6px 8px;color:#555;">${kr.id}</td>
-        <td style="padding:6px 8px;">${kr.text}</td>
-        <td style="padding:6px 8px;text-align:center;">${kr.target}</td>
-        <td style="padding:6px 8px;text-align:center;">${kr.owner}</td>
-        <td style="padding:6px 8px;text-align:center;">${fmtDate(kr.due)}</td>
-        <td style="padding:6px 8px;text-align:center;font-weight:700;color:#1A4BBF;">${kr.progress}%</td>
-      </tr>`).join('');
-    return `<div style="margin-bottom:24px;">
-      <div style="background:#0A1E6E;color:#fff;padding:10px 14px;border-radius:8px 8px 0 0;font-family:'Playfair Display',serif;font-size:15px;font-weight:700;">${obj.icon} ${obj.label}: ${obj.title} — ${avg}%</div>
-      <table style="width:100%;border-collapse:collapse;border:1px solid #E6EEF9;border-top:none;">
-        <thead><tr style="background:#EEF2FA;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#7A8FC2;">
-          <th style="padding:6px 8px;text-align:left;">ID</th><th style="padding:6px 8px;text-align:left;">Key Result</th>
-          <th style="padding:6px 8px;">Meta</th><th style="padding:6px 8px;">Responsável</th>
-          <th style="padding:6px 8px;">Prazo</th><th style="padding:6px 8px;">Progresso</th>
-        </tr></thead>
-        <tbody>${krs}</tbody>
-      </table></div>`;
-  }).join('');
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    <style>body{font-family:'DM Sans',sans-serif;padding:40px;color:#0A1E6E;max-width:900px;margin:auto;}</style>
-    </head><body>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:2px solid #F5A800;">
-      <div><div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:800;">ACIVI 360 — Sistema OKR</div>
-      <div style="font-size:14px;color:#7A8FC2;margin-top:4px;">Fase 1 · Prospecção · Q2 2026</div></div>
-      <div style="text-align:right;"><div style="font-family:'Playfair Display',serif;font-size:40px;font-weight:800;color:#1A4BBF;">${overall}%</div>
-      <div style="font-size:12px;color:#7A8FC2;">Progresso geral</div></div>
-    </div>
-    ${rows}
-    <div style="margin-top:32px;font-size:11px;color:#7A8FC2;text-align:center;">Gerado em ${new Date().toLocaleDateString('pt-BR')} · ACIVI 360 OKR System</div>
-    </body></html>`;
-  const w=window.open('','_blank');
-  w.document.write(html); w.document.close();
-  setTimeout(()=>w.print(),800);
+function selE(el){ selEmoji=el.dataset.e; document.querySelectorAll('.eopt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); }
+function selC(el){ selColor=el.dataset.c; selBg=el.dataset.b; document.querySelectorAll('.copt').forEach(e=>e.classList.remove('sel')); el.classList.add('sel'); }
+function addObj(){
+  const t=document.getElementById('new-obj-t').value.trim();
+  if(!t){ toast('⚠️ Informe o título'); return; }
+  const n=D.objectives.length+1;
+  D.objectives.push({id:'O'+n,label:'Objetivo '+n,title:t,color:selColor,bg:selBg,icon:selEmoji,open:false,krs:[]});
+  document.getElementById('obj-modal').classList.remove('open');
+  save(); toast('✅ Objetivo adicionado!'); renderAll();
 }
 
-// ════════════════════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════════════════════
-function showSection(name,el){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  if(el) el.classList.add('active');
-  if(name==='dashboard') renderChart();
-  if(name==='meetings') renderMeetings();
+// ══════════════════════════════════════════
+// MEETINGS
+// ══════════════════════════════════════════
+function getPending(){
+  if(!D.meetings.length) return [];
+  const last=D.meetings[D.meetings.length-1];
+  return (last.nextSteps||[]).filter(ns=>!ns.done);
 }
-
-// ════════════════════════════════════════════════════════════
-// EXPORT / IMPORT / RESET
-// ════════════════════════════════════════════════════════════
-function exportData(){
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='acivi360-okr-backup.json'; a.click(); showToast('📤 Exportado!');
-}
-function importData(){
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
-  inp.onchange=e=>{
-    const r=new FileReader();
-    r.onload=ev=>{ try{ data=JSON.parse(ev.target.result); persist(); renderAll(); showToast('✅ Importado!'); }catch{ showToast('❌ Arquivo inválido'); } };
-    r.readAsText(e.target.files[0]);
-  }; inp.click();
-}
-function resetData(){
-  if(!confirm('Apagar todo o progresso atual?')) return;
-  data=JSON.parse(JSON.stringify(defaultData));
-  localStorage.removeItem('acivi360-v2'); renderAll(); showToast('🔄 Dados resetados');
-}
-
-// ════════════════════════════════════════════════════════════
-// TOAST
-// ════════════════════════════════════════════════════════════
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
-
-// ════════════════════════════════════════════════════════════
-// LOGIN SYSTEM
-// ════════════════════════════════════════════════════════════
-const USERS={
-  'Aliny':  {pin:'1234',color:'#1A4BBF',initials:'AL',role:'Administradora',canEdit:true},
-  'Paulo':  {pin:'5678',color:'#0F6E56',initials:'PA',role:'Administrador', canEdit:true},
-  'Membros':{pin:'0000',color:'#F5A800',initials:'MB',role:'Leitura',       canEdit:false},
-};
-let currentUser=null, selUserBtn=null;
-
-function selectUser(btn){
-  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected'); selUserBtn=btn;
-  document.getElementById('btn-next').disabled=false;
-}
-function goToPin(){
-  if(!selUserBtn) return;
-  document.getElementById('pin-title').textContent='Olá, '+selUserBtn.dataset.user+'! Digite seu PIN';
-  document.querySelectorAll('.pin-input').forEach(p=>{p.value='';p.classList.remove('error');});
-  document.getElementById('pin-error').textContent='';
-  document.getElementById('step-user').classList.remove('active');
-  document.getElementById('step-pin').classList.add('active');
-  document.getElementById('p0').focus();
-}
-function backToUsers(){ document.getElementById('step-pin').classList.remove('active'); document.getElementById('step-user').classList.add('active'); }
-function pinInput(idx){
-  const inp=document.getElementById('p'+idx);
-  inp.value=inp.value.replace(/[^0-9]/g,'');
-  if(inp.value.length===1&&idx<3) document.getElementById('p'+(idx+1)).focus();
-  document.querySelectorAll('.pin-input').forEach(p=>p.classList.remove('error'));
-  document.getElementById('pin-error').textContent='';
-}
-function doLogin(){
-  if(!selUserBtn) return;
-  const name=selUserBtn.dataset.user;
-  const entered=[0,1,2,3].map(i=>document.getElementById('p'+i).value).join('');
-  const user=USERS[name];
-  if(entered===user.pin){
-    currentUser={name,...user};
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('pill-name').textContent=name;
-    document.getElementById('pill-av').textContent=user.initials;
-    document.getElementById('pill-av').style.background=user.color;
-    applyRoleRestrictions();
-    showToast('👋 Bem-vindo(a), '+name+'!');
-  } else {
-    document.querySelectorAll('.pin-input').forEach(p=>p.classList.add('error'));
-    document.getElementById('pin-error').textContent='PIN incorreto. Tente novamente.';
-    document.querySelectorAll('.pin-input').forEach(p=>p.value='');
-    document.getElementById('p0').focus();
-  }
-}
-function applyRoleRestrictions(){
-  if(!currentUser) return;
-  const hide=!currentUser.canEdit;
-  document.querySelectorAll('.edit-only').forEach(el=>el.style.display=hide?'none':'');
-}
-function doLogout(){
-  if(!confirm('Deseja sair da sua conta?')) return;
-  currentUser=null; selUserBtn=null;
-  document.querySelectorAll('.user-btn').forEach(b=>b.classList.remove('selected'));
-  document.getElementById('btn-next').disabled=true;
-  document.getElementById('step-pin').classList.remove('active');
-  document.getElementById('step-user').classList.add('active');
-  document.getElementById('login-screen').classList.remove('hidden');
-  document.querySelectorAll('.edit-only').forEach(el=>el.style.display='');
-}
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('step-pin').classList.contains('active')) doLogin();
-  if(e.key==='Escape'&&document.getElementById('pres-mode').classList.contains('active')) closePresMode();
-});
-
-
-// ════════════════════════════════════════════════════════════
-// MEETINGS MODULE
-// ════════════════════════════════════════════════════════════
-
-// ensure meetings array exists on data
-function ensureMeetings(){ if(!data.meetings) data.meetings=[]; }
-
-let newMeetTopics = [];
-
-function openNewMeeting(){
-  ensureMeetings();
-  newMeetTopics = [];
-  document.getElementById('nm-title').value = '';
-  document.getElementById('nm-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('nm-local').value = '';
-  document.getElementById('nm-participants').value = '';
-  document.getElementById('nm-topic-inp').value = '';
-  renderNewMeetTopics();
-
-  // Pre-fill from pending next steps of last meeting
-  const banner = document.getElementById('pending-prefill-banner');
-  const pending = getPendingNextSteps();
+function openNewMeet(){
+  nmTopics=[];
+  ['nm-title','nm-local','nm-part','nm-t-inp'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nm-date').value=new Date().toISOString().split('T')[0];
+  const pending=getPending();
+  const note=document.getElementById('pending-note');
   if(pending.length){
-    banner.innerHTML = `<div class="pending-banner">🔔 <strong>${pending.length} próximo(s) passo(s) pendente(s)</strong> da reunião anterior foram pré-adicionados como tópicos.</div>`;
-    pending.forEach(ns => { newMeetTopics.push('↩ (Pendente) ' + ns.text); });
-    renderNewMeetTopics();
-  } else {
-    banner.innerHTML = '';
-  }
-  document.getElementById('new-meet-form').classList.add('visible');
+    note.innerHTML=`<div class="pending-note">🔔 <strong>${pending.length} próximo(s) passo(s) pendente(s)</strong> da última reunião foram pré-adicionados como tópicos.</div>`;
+    pending.forEach(ns=>nmTopics.push('↩ (Pendente) '+ns.text));
+  } else { note.innerHTML=''; }
+  renderNMTopics();
+  document.getElementById('new-meet').classList.add('open');
 }
-
-function closeNewMeeting(){
-  document.getElementById('new-meet-form').classList.remove('visible');
-  newMeetTopics = [];
+function closeNewMeet(){ document.getElementById('new-meet').classList.remove('open'); nmTopics=[]; }
+function nmAddTopic(){
+  const inp=document.getElementById('nm-t-inp'), v=inp.value.trim();
+  if(!v) return; nmTopics.push(v); inp.value=''; renderNMTopics();
 }
-
-function getPendingNextSteps(){
-  ensureMeetings();
-  if(!data.meetings.length) return [];
-  const last = data.meetings[data.meetings.length - 1];
-  return (last.nextSteps || []).filter(ns => !ns.done);
+function renderNMTopics(){
+  document.getElementById('nm-topics').innerHTML=nmTopics.map((t,i)=>`
+    <div class="trow"><span class="trow-n">${i+1}.</span><span style="flex:1;font-size:13px;">${t}</span>
+    <span class="trow-del" onclick="nmTopics.splice(${i},1);renderNMTopics()">✕</span></div>`).join('')
+    ||'<div style="font-size:12px;color:var(--t3);padding:.25rem 0;">Nenhum tópico.</div>';
 }
-
-function addNewMeetTopic(){
-  const inp = document.getElementById('nm-topic-inp');
-  const val = inp.value.trim();
-  if(!val) return;
-  newMeetTopics.push(val);
-  inp.value = '';
-  renderNewMeetTopics();
-}
-
-function removeNewMeetTopic(i){
-  newMeetTopics.splice(i,1);
-  renderNewMeetTopics();
-}
-
-function renderNewMeetTopics(){
-  const el = document.getElementById('nm-topics-list');
-  el.innerHTML = newMeetTopics.map((t,i) => `
-    <div class="topic-row">
-      <span class="topic-num">${i+1}.</span>
-      <span class="topic-text">${t}</span>
-      <span class="topic-del" onclick="removeNewMeetTopic(${i})">✕</span>
-    </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);padding:.25rem 0;">Nenhum tópico adicionado.</div>';
-}
-
 function saveMeeting(){
-  const title = document.getElementById('nm-title').value.trim();
-  const date  = document.getElementById('nm-date').value;
-  if(!title){ showToast('⚠️ Informe o título da reunião'); return; }
-  if(!date)  { showToast('⚠️ Informe a data');             return; }
-  ensureMeetings();
-  const id = 'M' + Date.now();
-  data.meetings.push({
-    id, title, date,
-    local:        document.getElementById('nm-local').value.trim(),
-    participants: document.getElementById('nm-participants').value.trim(),
-    topics:       newMeetTopics.map(t=>({text:t})),
-    resolutions:  '',
-    nextSteps:    [],
-    open:         true,
+  const title=document.getElementById('nm-title').value.trim();
+  const date=document.getElementById('nm-date').value;
+  if(!title){ toast('⚠️ Informe o título'); return; }
+  if(!date){ toast('⚠️ Informe a data'); return; }
+  D.meetings.push({
+    id:'M'+Date.now(), title, date,
+    local:document.getElementById('nm-local').value.trim(),
+    participants:document.getElementById('nm-part').value.trim(),
+    topics:nmTopics.map(t=>({text:t})),
+    resolutions:'', nextSteps:[], open:true
   });
-  persist();
-  closeNewMeeting();
-  renderMeetings();
-  showToast('✅ Reunião criada!');
+  save(); closeNewMeet(); renderMeetings(); toast('✅ Reunião criada!');
 }
-
-function toggleMeeting(id){
-  ensureMeetings();
-  const m = data.meetings.find(x=>x.id===id);
-  if(m){ m.open=!m.open; persist(); renderMeetings(); }
+function toggleMeet(id){
+  const m=D.meetings.find(x=>x.id===id); if(!m) return;
+  m.open=!m.open; save(); renderMeetings();
 }
-
-function deleteMeeting(id){
+function delMeet(id){
   if(!confirm('Remover esta reunião?')) return;
-  data.meetings = data.meetings.filter(x=>x.id!==id);
-  persist(); renderMeetings(); showToast('🗑️ Reunião removida');
+  D.meetings=D.meetings.filter(x=>x.id!==id); save(); renderMeetings(); toast('🗑 Removida');
 }
-
-function addTopic(meetId){
-  const inp = document.getElementById('ti-'+meetId);
-  const val = inp.value.trim();
-  if(!val) return;
-  const m = data.meetings.find(x=>x.id===meetId);
-  m.topics.push({text:val});
-  inp.value='';
-  persist(); renderMeetings();
+function addTopic(mid){
+  const inp=document.getElementById('ti-'+mid), v=inp.value.trim(); if(!v) return;
+  D.meetings.find(x=>x.id===mid).topics.push({text:v}); inp.value=''; save(); renderMeetings();
 }
-
-function removeTopic(meetId, ti){
-  const m = data.meetings.find(x=>x.id===meetId);
-  m.topics.splice(ti,1);
-  persist(); renderMeetings();
-}
-
-function addNextStep(meetId){
-  const inp  = document.getElementById('nsi-'+meetId);
-  const own  = document.getElementById('nso-'+meetId);
-  const val  = inp.value.trim();
-  if(!val) return;
-  const m = data.meetings.find(x=>x.id===meetId);
+function delTopic(mid,ti){ D.meetings.find(x=>x.id===mid).topics.splice(ti,1); save(); renderMeetings(); }
+function addNS(mid){
+  const inp=document.getElementById('nsi-'+mid), own=document.getElementById('nso-'+mid);
+  const v=inp.value.trim(); if(!v) return;
+  const m=D.meetings.find(x=>x.id===mid);
   if(!m.nextSteps) m.nextSteps=[];
-  m.nextSteps.push({text:val, owner: own?own.value:'—', done:false});
-  inp.value='';
-  persist(); renderMeetings();
+  m.nextSteps.push({text:v,owner:own?own.value:'—',done:false});
+  inp.value=''; save(); renderMeetings();
 }
-
-function removeNextStep(meetId, ni){
-  const m = data.meetings.find(x=>x.id===meetId);
-  m.nextSteps.splice(ni,1);
-  persist(); renderMeetings();
-}
-
-function toggleNextStep(meetId, ni){
-  const m = data.meetings.find(x=>x.id===meetId);
-  m.nextSteps[ni].done = !m.nextSteps[ni].done;
-  persist(); renderMeetings();
-}
-
-function saveResolution(meetId, text){
-  const m = data.meetings.find(x=>x.id===meetId);
-  m.resolutions = text;
-  persist();
-}
-
-function fmtMeetDate(dateStr){
-  if(!dateStr) return {day:'—',mon:'—'};
-  const d = new Date(dateStr+'T00:00:00');
-  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  return {day:String(d.getDate()).padStart(2,'0'), mon:months[d.getMonth()]+' '+d.getFullYear()};
-}
+function delNS(mid,ni){ D.meetings.find(x=>x.id===mid).nextSteps.splice(ni,1); save(); renderMeetings(); }
+function toggleNS(mid,ni){ const m=D.meetings.find(x=>x.id===mid); m.nextSteps[ni].done=!m.nextSteps[ni].done; save(); renderMeetings(); }
+function saveRes(mid,text){ D.meetings.find(x=>x.id===mid).resolutions=text; save(); }
 
 function renderMeetings(){
-  ensureMeetings();
-  const list = document.getElementById('meet-list');
-  const empty = document.getElementById('meet-empty');
+  if(!D.meetings) D.meetings=[];
+  const list=document.getElementById('meet-list');
+  const empty=document.getElementById('meet-empty');
   if(!list) return;
-
-  const meetings = [...data.meetings].reverse(); // newest first
-  if(!meetings.length){ list.innerHTML=''; empty.style.display='block'; return; }
+  const canEdit=CU&&CU.canEdit;
+  if(!D.meetings.length){ list.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
-
-  const canEdit = currentUser && currentUser.canEdit;
-  list.innerHTML = meetings.map(m=>{
-    const {day,mon} = fmtMeetDate(m.date);
-    const pending = (m.nextSteps||[]).filter(ns=>!ns.done).length;
-    const total   = (m.nextSteps||[]).length;
-    const topicsHtml = (m.topics||[]).map((t,ti)=>`
-      <div class="topic-row">
-        <span class="topic-num">${ti+1}.</span>
-        <span class="topic-text">${t.text}</span>
-        ${canEdit?`<span class="topic-del" onclick="removeTopic('${m.id}',${ti})">✕</span>`:''}
-      </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);">Nenhum tópico registrado.</div>';
-
-    const nsHtml = (m.nextSteps||[]).map((ns,ni)=>`
-      <div class="nextstep-row">
-        <div class="ns-check ${ns.done?'done':''}" onclick="toggleNextStep('${m.id}',${ni})">${ns.done?'✓':''}</div>
-        <span class="ns-text ${ns.done?'done':''}">${ns.text}</span>
-        <span class="ns-owner">👤 ${ns.owner||'—'}</span>
-        ${canEdit?`<span class="ns-del" onclick="removeNextStep('${m.id}',${ni})">✕</span>`:''}
-      </div>`).join('') || '<div style="font-size:12px;color:var(--text-3);">Nenhum próximo passo definido.</div>';
-
-    const ownerOpts = MEMBERS.map(mm=>`<option>${mm}</option>`).join('');
-
-    return `<div class="meet-card ${m.open?'open':''}" id="mc-${m.id}">
-      <div class="meet-card-hdr" onclick="toggleMeeting('${m.id}')">
-        <div class="meet-date-badge"><div class="meet-date-day">${day}</div><div class="meet-date-mon">${mon}</div></div>
-        <div class="meet-hdr-info">
+  const months=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  list.innerHTML=[...D.meetings].reverse().map(m=>{
+    const d=new Date(m.date+'T00:00:00');
+    const day=String(d.getDate()).padStart(2,'0'), mon=months[d.getMonth()]+' '+d.getFullYear();
+    const pending=(m.nextSteps||[]).filter(ns=>!ns.done).length;
+    const total=(m.nextSteps||[]).length;
+    const topicsH=(m.topics||[]).map((t,ti)=>`
+      <div class="trow"><span class="trow-n">${ti+1}.</span><span style="flex:1;">${t.text}</span>
+      ${canEdit?`<span class="trow-del" onclick="delTopic('${m.id}',${ti})">✕</span>`:''}</div>`).join('')
+      ||'<div style="font-size:12px;color:var(--t3)">Nenhum tópico.</div>';
+    const nsH=(m.nextSteps||[]).map((ns,ni)=>`
+      <div class="nsrow">
+        <div class="nscheck ${ns.done?'done':''}" onclick="toggleNS('${m.id}',${ni})">${ns.done?'✓':''}</div>
+        <span class="nstext ${ns.done?'done':''}" style="flex:1;">${ns.text}</span>
+        <span class="nsown">👤 ${ns.owner||'—'}</span>
+        ${canEdit?`<span class="nsdel" onclick="delNS('${m.id}',${ni})">✕</span>`:''}</div>`).join('')
+      ||'<div style="font-size:12px;color:var(--t3)">Nenhum próximo passo.</div>';
+    const ownerOpts=OWNERS.map(o=>`<option>${o}</option>`).join('');
+    return `<div class="meet-card ${m.open?'open':''}">
+      <div class="meet-hdr" onclick="toggleMeet('${m.id}')">
+        <div class="meet-badge"><div class="meet-badge-day">${day}</div><div class="meet-badge-mon">${mon}</div></div>
+        <div class="meet-info">
           <div class="meet-title">${m.title}</div>
-          <div class="meet-meta">
-            ${m.local?`<span class="meet-tag">📍 ${m.local}</span>`:''}
-            ${m.participants?`<span class="meet-tag">👥 ${m.participants}</span>`:''}
-            ${total?`<span class="meet-tag ${pending?'pending':'done'}">${pending?'⏳ '+pending+' pendente'+(pending!==1?'s':''):'✅ Tudo feito'}</span>`:''}
+          <div class="meet-tags">
+            ${m.local?`<span class="mtag">📍 ${m.local}</span>`:''}
+            ${m.participants?`<span class="mtag">👥 ${m.participants}</span>`:''}
+            ${total?`<span class="mtag ${pending?'mtag-gold':'mtag-green'}">${pending?'⏳ '+pending+' pendente'+(pending!==1?'s':''):'✅ Tudo feito'}</span>`:''}
           </div>
         </div>
-        <div class="meet-actions" onclick="event.stopPropagation()">
-          ${canEdit?`<button class="btn btn-danger btn-xs edit-only" onclick="deleteMeeting('${m.id}')">🗑</button>`:''}
+        <div style="display:flex;gap:5px;align-items:center;flex-shrink:0;" onclick="event.stopPropagation()">
+          ${canEdit?`<button class="btn btn-red btn-xs edit-only" onclick="delMeet('${m.id}')">🗑</button>`:''}
           <span class="chevron">⌄</span>
         </div>
       </div>
       <div class="meet-body">
-        <!-- TÓPICOS -->
-        <div class="meet-section">
-          <div class="meet-section-title">📌 Tópicos discutidos</div>
-          ${topicsHtml}
-          ${canEdit?`<div class="add-inline-row">
-            <input class="add-inline-input" id="ti-${m.id}" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){addTopic('${m.id}');event.preventDefault();}">
-            <button class="btn btn-outline btn-sm" onclick="addTopic('${m.id}')">+ Adicionar</button>
-          </div>`:''}
+        <div class="msec">
+          <div class="msec-title">📌 Tópicos discutidos</div>
+          ${topicsH}
+          ${canEdit?`<div class="add-row"><input class="add-inp" id="ti-${m.id}" placeholder="Adicionar tópico…" onkeydown="if(event.key==='Enter'){addTopic('${m.id}');event.preventDefault();}"><button class="btn btn-out btn-sm" onclick="addTopic('${m.id}')">+ Add</button></div>`:''}
         </div>
-        <!-- RESOLUÇÕES -->
-        <div class="meet-section">
-          <div class="meet-section-title">✅ Resoluções</div>
-          <div class="resolution-box" ${canEdit?`contenteditable="true" onblur="saveResolution('${m.id}',this.innerText)"`:''}>${m.resolutions||'<span style="color:var(--text-3);font-style:italic;">Clique para registrar as resoluções desta reunião…</span>'}</div>
+        <div class="msec">
+          <div class="msec-title">✅ Resoluções</div>
+          <div class="resbox" ${canEdit?`contenteditable="true" onblur="saveRes('${m.id}',this.innerText)"`:''}>${m.resolutions||'<span style="color:var(--t3);font-style:italic;">Clique para registrar as resoluções…</span>'}</div>
         </div>
-        <!-- PRÓXIMOS PASSOS -->
-        <div class="meet-section">
-          <div class="meet-section-title">🚀 Próximos passos <span style="font-weight:400;font-style:normal;font-size:11px;color:var(--text-3);">(pré-preenche tópicos da próxima reunião)</span></div>
-          ${nsHtml}
-          ${canEdit?`<div class="add-inline-row">
-            <input class="add-inline-input" id="nsi-${m.id}" placeholder="Próximo passo…" onkeydown="if(event.key==='Enter'){addNextStep('${m.id}');event.preventDefault();}">
-            <select class="form-select" id="nso-${m.id}" style="width:140px;font-size:12px;padding:6px 8px;">${ownerOpts}</select>
-            <button class="btn btn-outline btn-sm" onclick="addNextStep('${m.id}')">+ Adicionar</button>
-          </div>`:''}
+        <div class="msec">
+          <div class="msec-title">🚀 Próximos passos <span style="font-weight:400;font-size:10px;color:var(--t3);">(pré-preenche tópicos da próxima reunião)</span></div>
+          ${nsH}
+          ${canEdit?`<div class="add-row"><input class="add-inp" id="nsi-${m.id}" placeholder="Próximo passo…" onkeydown="if(event.key==='Enter'){addNS('${m.id}');event.preventDefault();}"><select class="fi" id="nso-${m.id}" style="width:130px;font-size:12px;padding:5px 7px;">${ownerOpts}</select><button class="btn btn-out btn-sm" onclick="addNS('${m.id}')">+ Add</button></div>`:''}
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════
+// PRESENTATION
+// ══════════════════════════════════════════
+function openPres(){
+  document.getElementById('pres-pct').textContent=overall()+'%';
+  document.getElementById('pres-grid').innerHTML=D.objectives.map(o=>{
+    const avg=objAvg(o);
+    return `<div class="pcard">
+      <div class="pcard-lbl">${o.label}</div>
+      <div class="pcard-title">${o.title}</div>
+      <div class="pcard-pct" style="color:${o.color}">${avg}%</div>
+      <div class="pcard-bar"><div class="pcard-bar-fill" style="width:${avg}%;background:${o.color}"></div></div>
+      ${o.krs.map(k=>`<div class="pkr"><span>${k.id}: ${k.text.substring(0,48)}${k.text.length>48?'…':''}</span><span style="font-weight:600">${k.prog}%</span></div>`).join('')}
+    </div>`;
+  }).join('');
+  document.getElementById('pres').classList.add('open');
+}
+function closePres(){ document.getElementById('pres').classList.remove('open'); }
+
+// ══════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════
+function exportJSON(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));
+  a.download='acivi360-backup.json'; a.click(); toast('📤 Exportado!');
+}
+function importJSON(){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=e=>{ const r=new FileReader(); r.onload=ev=>{ try{ D=JSON.parse(ev.target.result); save(); renderAll(); renderMeetings(); toast('✅ Importado!'); }catch{ toast('❌ Arquivo inválido'); } }; r.readAsText(e.target.files[0]); }; inp.click();
+}
+function exportPDF(){
+  const w=window.open('','_blank');
+  const rows=D.objectives.map(o=>{
+    const avg=objAvg(o);
+    return `<h3 style="color:#0A1E6E;margin:1rem 0 .4rem">${o.icon} ${o.label} — ${avg}%</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem;">
+      <tr style="background:#EEF2FA;"><th style="padding:6px;text-align:left;">KR</th><th style="padding:6px;text-align:left;">Descrição</th><th style="padding:6px;">Meta</th><th style="padding:6px;">Resp.</th><th style="padding:6px;">Prog.</th></tr>
+      ${o.krs.map(k=>`<tr style="border-bottom:1px solid #E6EEF9;"><td style="padding:6px;color:#7A8FC2;">${k.id}</td><td style="padding:6px;">${k.text}</td><td style="padding:6px;text-align:center;">${k.target}</td><td style="padding:6px;text-align:center;">${k.owner}</td><td style="padding:6px;text-align:center;font-weight:700;color:#1A4BBF;">${k.prog}%</td></tr>`).join('')}
+    </table>`;
+  }).join('');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ACIVI 360 OKR</title></head><body style="font-family:sans-serif;padding:2rem;color:#0A1E6E;max-width:900px;margin:auto;">
+    <h1 style="font-size:24px;margin-bottom:4px;">ACIVI 360 — OKR</h1>
+    <p style="color:#7A8FC2;margin-bottom:1.5rem;">Fase 1 · Prospecção · Q2 2026 · Progresso: ${overall()}%</p>
+    ${rows}
+    <p style="font-size:11px;color:#7A8FC2;text-align:center;margin-top:2rem;">Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>
+  </body></html>`);
+  w.document.close(); setTimeout(()=>w.print(),600);
+}
+function resetData(){
+  if(!confirm('Apagar todo o progresso?')) return;
+  D=clone(DEF); localStorage.removeItem('acivi360'); renderAll(); renderMeetings(); toast('🔄 Resetado');
+}
+
+// ══════════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════════
+function selU(btn){
+  document.querySelectorAll('.ubtn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel'); selUBtn=btn;
+  document.getElementById('lbtn-next').disabled=false;
+}
+function goPin(){
+  if(!selUBtn) return;
+  document.getElementById('l-pintitle').textContent='Olá, '+selUBtn.dataset.u+'! Digite seu PIN';
+  document.querySelectorAll('.pin').forEach(p=>{p.value='';p.classList.remove('err');});
+  document.getElementById('perr').textContent='';
+  document.getElementById('lstep-u').classList.remove('active');
+  document.getElementById('lstep-p').classList.add('active');
+  document.getElementById('p0').focus();
+}
+function backU(){
+  document.getElementById('lstep-p').classList.remove('active');
+  document.getElementById('lstep-u').classList.add('active');
+}
+function pi(i){
+  const inp=document.getElementById('p'+i);
+  inp.value=inp.value.replace(/[^0-9]/g,'');
+  if(inp.value.length===1&&i<3) document.getElementById('p'+(i+1)).focus();
+  document.querySelectorAll('.pin').forEach(p=>p.classList.remove('err'));
+  document.getElementById('perr').textContent='';
+}
+function doLogin(){
+  if(!selUBtn) return;
+  const name=selUBtn.dataset.u;
+  const entered=[0,1,2,3].map(i=>document.getElementById('p'+i).value).join('');
+  const u=USERS[name];
+  if(entered===u.pin){
+    CU={name,...u};
+    document.getElementById('login').classList.add('hidden');
+    document.getElementById('uav').textContent=u.ini;
+    document.getElementById('uav').style.background=u.color;
+    document.getElementById('uname').textContent=name;
+    applyRole(); toast('👋 Bem-vindo(a), '+name+'!');
+  } else {
+    document.querySelectorAll('.pin').forEach(p=>p.classList.add('err'));
+    document.getElementById('perr').textContent='PIN incorreto.';
+    document.querySelectorAll('.pin').forEach(p=>p.value='');
+    document.getElementById('p0').focus();
+  }
+}
+function doLogout(){
+  if(!confirm('Sair da conta?')) return;
+  CU=null; selUBtn=null;
+  document.querySelectorAll('.ubtn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('lbtn-next').disabled=true;
+  document.getElementById('lstep-p').classList.remove('active');
+  document.getElementById('lstep-u').classList.add('active');
+  document.getElementById('login').classList.remove('hidden');
+  document.querySelectorAll('.edit-only').forEach(e=>e.style.display='');
+}
+function applyRole(){
+  if(!CU) return;
+  document.querySelectorAll('.edit-only').forEach(e=>e.style.display=CU.canEdit?'':'none');
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+// ══════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('lstep-p').classList.contains('active')) doLogin();
+  if(e.key==='Escape') closePres();
+});
+
+// ══════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════════════════════
-loadData();
-ensureMeetings();
+// ══════════════════════════════════════════
+load();
 renderAll();
 renderMeetings();
 </script>
